@@ -367,7 +367,7 @@ async function loadLibrary() {
 
     // Fallback sync with localStorage cache if present
     try {
-      const userKey = AppState.currentUser?.id || 'guest';
+      const userKey = AppState.user?.id || AppState.currentUser?.id || 'guest';
       const cached = localStorage.getItem(`gapfinder_quiz_attempts_${userKey}`);
       if (cached) {
         const parsed = JSON.parse(cached);
@@ -1559,7 +1559,7 @@ async function submitTopicQuiz() {
     }
 
     try {
-      const userKey = AppState.currentUser?.id || 'guest';
+      const userKey = AppState.user?.id || AppState.currentUser?.id || 'guest';
       localStorage.setItem(`gapfinder_quiz_attempts_${userKey}`, JSON.stringify(AppState.quizAttempts));
     } catch {}
 
@@ -3256,6 +3256,22 @@ async function loadRevisionPlan(subjectId) {
       if (data.plan) {
         AppState.activeRevisionPlan = data.plan;
         renderRevisionPlan(data.plan);
+      } else {
+        AppState.activeRevisionPlan = null;
+        const progressCard = document.getElementById('plan-progress-card');
+        if (progressCard) progressCard.style.display = 'none';
+        const bannerContainer = document.getElementById('plan-data-source-banner');
+        if (bannerContainer) bannerContainer.innerHTML = '';
+        const scheduleContainer = document.getElementById('revision-plan-schedule');
+        if (scheduleContainer) {
+          scheduleContainer.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📅</div>
+              <h3>No Revision Plan Generated Yet</h3>
+              <p class="text-muted">Set your study days and daily hours above, then click "Generate Revision Plan" to build a schedule grounded in your diagnostic gaps.</p>
+            </div>
+          `;
+        }
       }
     }
   } catch (err) {
