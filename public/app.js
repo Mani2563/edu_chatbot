@@ -42,6 +42,78 @@ const AppState = {
 window.AppState = AppState;
 
 // ============================================================================
+// Toast Notification Utility
+// ============================================================================
+function showToast(message, type = 'info') {
+  if (!message) return;
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 380px;
+      pointer-events: none;
+    `;
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  const bg = type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : type === 'success' ? '#10b981' : '#3b82f6';
+  const icon = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : type === 'success' ? '✅' : 'ℹ️';
+
+  toast.style.cssText = `
+    background: #ffffff;
+    color: #1e293b;
+    border-left: 4px solid ${bg};
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  `;
+
+  const msgSpan = document.createElement('span');
+  msgSpan.style.flex = '1';
+  msgSpan.textContent = message;
+
+  const iconSpan = document.createElement('span');
+  iconSpan.style.fontSize = '1.1rem';
+  iconSpan.style.flexShrink = '0';
+  iconSpan.textContent = icon;
+
+  toast.appendChild(iconSpan);
+  toast.appendChild(msgSpan);
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-10px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+window.showToast = showToast;
+
+// ============================================================================
 // Initialization on DOM Ready
 // ============================================================================
 document.addEventListener('DOMContentLoaded', async () => {
@@ -282,12 +354,14 @@ function navigateTo(viewName) {
     renderDashboardMetrics();
     renderDashboardMaterials();
     // Asynchronously fetch fresh quiz history to guarantee real-time dynamic sync
-    apiRequest('/api/quiz/history').then(res => {
-      if (res && res.success && Array.isArray(res.attempts)) {
-        AppState.quizAttempts = res.attempts;
-        renderDashboardMetrics();
-      }
-    }).catch(() => {});
+    if (AppState.session?.access_token) {
+      apiRequest('/api/quiz/history').then(res => {
+        if (res && res.success && Array.isArray(res.attempts)) {
+          AppState.quizAttempts = res.attempts;
+          renderDashboardMetrics();
+        }
+      }).catch(() => {});
+    }
   }
 }
 
