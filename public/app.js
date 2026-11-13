@@ -1849,36 +1849,41 @@ async function submitAiPrompt() {
   const loadingBubble = appendChatBubble('assistant', `Searching verified study materials in ${activeDoc ? activeDoc.file_name : 'document'}...`);
 
   try {
-    const topicContext = AppState.selectedTopic ? `Context Topic: ${AppState.selectedTopic.name}. ` : '';
-    const fullQuery = `${topicContext}${query}`;
+    const recentHistory = (history || []).slice(-6).map(h => ({
+      role: h.role,
+      content: typeof h.content === 'string' ? h.content.replace(/<[^>]*>/g, '') : ''
+    }));
 
-    const res = await apiRequest('/api/rag/retrieve', {
+    const res = await apiRequest('/api/assistant/chat', {
       method: 'POST',
       body: JSON.stringify({
-        query: fullQuery,
-        limit: 3,
-        documentId: docId
+        message: query,
+        documentId: docId || null,
+        history: recentHistory
       })
     });
 
     let assistantContent = '';
     let citation = null;
 
-    if (res.success && res.chunks && res.chunks.length > 0) {
-      const topChunk = res.chunks[0];
-      const pageInfo = topChunk.page_number ? `(Page ${topChunk.page_number})` : '';
-      assistantContent = `Based on your uploaded material <em>${escapeHtml(activeDoc?.file_name || 'materials')}</em> ${pageInfo}:<br><br>${escapeHtml(topChunk.content).substring(0, 320)}...`;
-      citation = {
-        sectionTitle: topChunk.section_title || 'Verified Section',
-        pageNumber: topChunk.page_number
-      };
+    if (res && res.success && res.reply) {
+      // Convert markdown-style bold and paragraphs to clean HTML for rendering
+      assistantContent = escapeHtml(res.reply)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
 
-      loadingBubble.innerHTML = `
-        <p>${assistantContent}</p>
-        <div class="ai-citation-card">
-          <strong>Verified Source:</strong> ${escapeHtml(citation.sectionTitle)} ${pageInfo}
-        </div>
-      `;
+      citation = res.citations && res.citations.length > 0 ? res.citations[0] : null;
+
+      loadingBubble.innerHTML = `<p>${assistantContent}</p>`;
+      if (citation) {
+        const pageInfo = citation.pageNumber ? `(Page ${citation.pageNumber})` : '';
+        loadingBubble.innerHTML += `
+          <div class="ai-citation-card">
+            <strong>Verified Source:</strong> ${escapeHtml(citation.sectionTitle || 'Curriculum Section')} ${pageInfo} • <em>${escapeHtml(citation.documentName || activeDoc?.file_name || 'Study Material')}</em>
+          </div>
+        `;
+      }
     } else {
       assistantContent = `I reviewed <strong>${escapeHtml(activeDoc?.file_name || 'your uploaded materials')}</strong> for "${escapeHtml(query)}", but could not find a direct citation. Try asking about a specific topic or section from this document.`;
       loadingBubble.innerHTML = `<p>${assistantContent}</p>`;
