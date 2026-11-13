@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GapFinder AI — Modern Student Learning Workspace</title>
-  <link rel="stylesheet" href="/style.css?v=6">
+  <link rel="stylesheet" href="/style.css?v=7">
   <!-- Supabase Official JavaScript Client for Browser Auth & Direct Storage Uploads -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -122,7 +122,7 @@
                 <div id="auth-error-box" class="auth-error-box"></div>
 
                 <!-- Sign In Form -->
-                <form id="signin-form">
+                <form id="signin-form" novalidate>
                   <div class="form-group">
                     <label for="signin-email">Email Address</label>
                     <input type="email" id="signin-email" class="form-control" placeholder="student@example.com" required autocomplete="email">
@@ -137,7 +137,7 @@
                 </form>
 
                 <!-- Sign Up Form (hidden by default) -->
-                <form id="signup-form" style="display: none;">
+                <form id="signup-form" style="display: none;" novalidate>
                   <div class="form-group">
                     <label for="signup-name">Full Name</label>
                     <input type="text" id="signup-name" class="form-control" placeholder="Student Name" required autocomplete="name">
@@ -147,9 +147,36 @@
                     <input type="email" id="signup-email" class="form-control" placeholder="student@example.com" required autocomplete="email">
                   </div>
                   <div class="form-group">
-                    <label for="signup-password">Password (min. 6 characters)</label>
-                    <input type="password" id="signup-password" class="form-control" placeholder="••••••••" minlength="6" required autocomplete="new-password">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" placeholder="Create a strong password" required autocomplete="new-password">
+                    
+                    <!-- Dynamic Password Requirements Indicator -->
+                    <div class="password-checklist" id="password-checklist">
+                      <div class="checklist-item invalid" id="check-uppercase">
+                        <span class="checklist-icon">✕</span>
+                        <span class="checklist-text">At least one uppercase letter (A-Z)</span>
+                      </div>
+                      <div class="checklist-item invalid" id="check-lowercase">
+                        <span class="checklist-icon">✕</span>
+                        <span class="checklist-text">At least one lowercase letter (a-z)</span>
+                      </div>
+                      <div class="checklist-item invalid" id="check-number">
+                        <span class="checklist-icon">✕</span>
+                        <span class="checklist-text">At least one number (0-9)</span>
+                      </div>
+                      <div class="checklist-item invalid" id="check-length">
+                        <span class="checklist-icon">✕</span>
+                        <span class="checklist-text">Minimum 8 characters</span>
+                      </div>
+                    </div>
                   </div>
+
+                  <div class="form-group">
+                    <label for="signup-password-confirm">Confirm Password</label>
+                    <input type="password" id="signup-password-confirm" class="form-control" placeholder="Confirm your password" required autocomplete="new-password">
+                    <div class="password-match-indicator" id="password-match-indicator" style="display: none;"></div>
+                  </div>
+
                   <button type="submit" class="btn-auth-submit" id="signup-submit-btn">
                     <span>Create Account</span>
                   </button>
@@ -627,6 +654,6 @@
   </div>
 
   <!-- App Controller Script -->
-  <script src="/app.js?v=6"></script>
+  <script src="/app.js?v=7"></script>
 </body>
 </html>

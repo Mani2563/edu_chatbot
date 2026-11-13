@@ -1974,7 +1974,7 @@ async function handleReextract(docId) {
 }
 
 // ============================================================================
-// Auth Form Handlers (Sign In, Sign Up, 1-Click Evaluator)
+// Auth Form Handlers (Sign In, Sign Up, Real-Time Validation & Friendly Errors)
 // ============================================================================
 function setupAuthForms() {
   const signinForm = document.getElementById('signin-form');
@@ -1983,9 +1983,22 @@ function setupAuthForms() {
   const tabSignup = document.getElementById('tab-signup-btn');
   const errorBox = document.getElementById('auth-error-box');
 
-  const showAuthError = (msg) => {
+  const signupPassword = document.getElementById('signup-password');
+  const signupPasswordConfirm = document.getElementById('signup-password-confirm');
+  const passwordMatchIndicator = document.getElementById('password-match-indicator');
+
+  const checkUppercase = document.getElementById('check-uppercase');
+  const checkLowercase = document.getElementById('check-lowercase');
+  const checkNumber = document.getElementById('check-number');
+  const checkLength = document.getElementById('check-length');
+
+  const showAuthError = (msg, isHtml = false) => {
     if (errorBox) {
-      errorBox.textContent = msg;
+      if (isHtml) {
+        errorBox.innerHTML = msg;
+      } else {
+        errorBox.textContent = msg;
+      }
       errorBox.style.display = 'block';
     } else {
       alert(msg);
@@ -1995,43 +2008,185 @@ function setupAuthForms() {
   const clearAuthError = () => {
     if (errorBox) {
       errorBox.textContent = '';
+      errorBox.innerHTML = '';
       errorBox.style.display = 'none';
+    }
+  };
+
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const checkEmailExists = async (email) => {
+    try {
+      const res = await fetch('/api/auth/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        return data.exists;
+      }
+    } catch (err) {
+      console.warn('Check email lookup error:', err);
+    }
+    return null;
+  };
+
+  // Real-time password criteria validation
+  const evaluatePasswordChecklist = (val) => {
+    const hasUpper = /[A-Z]/.test(val);
+    const hasLower = /[a-z]/.test(val);
+    const hasNumber = /[0-9]/.test(val);
+    const hasLen = val.length >= 8;
+
+    const setItemStatus = (itemEl, isValid) => {
+      if (!itemEl) return;
+      const icon = itemEl.querySelector('.checklist-icon');
+      if (isValid) {
+        itemEl.classList.remove('invalid');
+        itemEl.classList.add('valid');
+        if (icon) icon.textContent = '✓';
+      } else {
+        itemEl.classList.remove('valid');
+        itemEl.classList.add('invalid');
+        if (icon) icon.textContent = '✕';
+      }
+    };
+
+    setItemStatus(checkUppercase, hasUpper);
+    setItemStatus(checkLowercase, hasLower);
+    setItemStatus(checkNumber, hasNumber);
+    setItemStatus(checkLength, hasLen);
+
+    return hasUpper && hasLower && hasNumber && hasLen;
+  };
+
+  // Real-time password confirmation match check
+  const evaluatePasswordMatch = () => {
+    if (!passwordMatchIndicator) return false;
+    const pwd = signupPassword ? signupPassword.value : '';
+    const confirmPwd = signupPasswordConfirm ? signupPasswordConfirm.value : '';
+
+    if (!confirmPwd) {
+      passwordMatchIndicator.style.display = 'none';
+      passwordMatchIndicator.className = 'password-match-indicator';
+      passwordMatchIndicator.innerHTML = '';
+      return false;
+    }
+
+    passwordMatchIndicator.style.display = 'flex';
+    if (pwd === confirmPwd) {
+      passwordMatchIndicator.className = 'password-match-indicator match';
+      passwordMatchIndicator.innerHTML = '<span>✓</span> <span>Passwords match</span>';
+      return true;
+    } else {
+      passwordMatchIndicator.className = 'password-match-indicator mismatch';
+      passwordMatchIndicator.innerHTML = '<span>✕</span> <span>Passwords do not match</span>';
+      return false;
+    }
+  };
+
+  // Listeners for dynamic password validation
+  if (signupPassword) {
+    signupPassword.addEventListener('input', () => {
+      evaluatePasswordChecklist(signupPassword.value);
+      if (signupPasswordConfirm && signupPasswordConfirm.value) {
+        evaluatePasswordMatch();
+      }
+    });
+  }
+
+  if (signupPasswordConfirm) {
+    signupPasswordConfirm.addEventListener('input', () => {
+      evaluatePasswordMatch();
+    });
+  }
+
+  const switchToTab = (targetTab) => {
+    clearAuthError();
+    if (targetTab === 'signin') {
+      tabSignin?.classList.add('active');
+      tabSignup?.classList.remove('active');
+      if (signinForm) signinForm.style.display = 'block';
+      if (signupForm) signupForm.style.display = 'none';
+    } else {
+      tabSignup?.classList.add('active');
+      tabSignin?.classList.remove('active');
+      if (signupForm) signupForm.style.display = 'block';
+      if (signinForm) signinForm.style.display = 'none';
     }
   };
 
   if (tabSignin) {
     tabSignin.addEventListener('click', () => {
-      clearAuthError();
-      tabSignin.classList.add('active');
-      tabSignup?.classList.remove('active');
-      if (signinForm) signinForm.style.display = 'block';
-      if (signupForm) signupForm.style.display = 'none';
+      switchToTab('signin');
     });
   }
 
   if (tabSignup) {
     tabSignup.addEventListener('click', () => {
-      clearAuthError();
-      tabSignup.classList.add('active');
-      tabSignin?.classList.remove('active');
-      if (signupForm) signupForm.style.display = 'block';
-      if (signinForm) signinForm.style.display = 'none';
+      switchToTab('signup');
     });
   }
 
+  // Sign In Handler
   if (signinForm) {
     signinForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       clearAuthError();
-      const email = document.getElementById('signin-email').value.trim();
-      const password = document.getElementById('signin-password').value;
+      const emailInput = document.getElementById('signin-email');
+      const passwordInput = document.getElementById('signin-password');
+      const email = emailInput ? emailInput.value.trim() : '';
+      const password = passwordInput ? passwordInput.value : '';
       const btn = document.getElementById('signin-submit-btn');
 
+      if (!email) {
+        showAuthError('Please enter your email address.');
+        emailInput?.focus();
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showAuthError('Your email address is incorrect. Please enter a valid email address.');
+        emailInput?.focus();
+        return;
+      }
+
+      if (!password) {
+        showAuthError('Please enter your password.');
+        passwordInput?.focus();
+        return;
+      }
+
       if (btn) btn.disabled = true;
+
       try {
-        const { error } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
+        const { data, error } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
-          showAuthError(`Sign in failed: ${error.message}`);
+          // Check if user exists to provide exact customized feedback requested by user
+          const exists = await checkEmailExists(email);
+          if (exists === false) {
+            showAuthError(
+              `No account found with this email ID. Please sign up to create an account.<br><a href="#" class="auth-switch-link" id="auth-goto-signup">👉 Switch to Create Account</a>`,
+              true
+            );
+            const gotoSignup = document.getElementById('auth-goto-signup');
+            if (gotoSignup) {
+              gotoSignup.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                switchToTab('signup');
+                const signupEmail = document.getElementById('signup-email');
+                if (signupEmail) signupEmail.value = email;
+              });
+            }
+          } else if (exists === true) {
+            showAuthError('Your password is not correct. Please check your password and try again.');
+            passwordInput?.focus();
+          } else {
+            showAuthError(`Sign in failed: ${error.message}`);
+          }
         }
       } catch (err) {
         showAuthError(`Sign in error: ${err.message}`);
@@ -2041,24 +2196,106 @@ function setupAuthForms() {
     });
   }
 
+  // Sign Up Handler
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       clearAuthError();
-      const name = document.getElementById('signup-name').value.trim();
-      const email = document.getElementById('signup-email').value.trim();
-      const password = document.getElementById('signup-password').value;
+      const nameInput = document.getElementById('signup-name');
+      const emailInput = document.getElementById('signup-email');
+      const passwordInput = document.getElementById('signup-password');
+      const confirmInput = document.getElementById('signup-password-confirm');
+
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const password = passwordInput ? passwordInput.value : '';
+      const confirmPassword = confirmInput ? confirmInput.value : '';
       const btn = document.getElementById('signup-submit-btn');
 
+      if (!name) {
+        showAuthError('Please enter your full name.');
+        nameInput?.focus();
+        return;
+      }
+
+      if (!email) {
+        showAuthError('Please enter your email address.');
+        emailInput?.focus();
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showAuthError('Your email address is incorrect. Please enter a valid email address.');
+        emailInput?.focus();
+        return;
+      }
+
+      const isCriteriaMet = evaluatePasswordChecklist(password);
+      if (!isCriteriaMet) {
+        showAuthError('Your password does not meet all security requirements. Please check the rules below.');
+        passwordInput?.focus();
+        return;
+      }
+
+      if (!confirmPassword) {
+        showAuthError('Please confirm your password.');
+        confirmInput?.focus();
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAuthError('Passwords do not match. Please re-enter matching passwords.');
+        confirmInput?.focus();
+        return;
+      }
+
       if (btn) btn.disabled = true;
+
       try {
-        const { error } = await AppState.supabaseClient.auth.signUp({
+        // First verify whether account already exists with this email
+        const exists = await checkEmailExists(email);
+        if (exists === true) {
+          showAuthError(
+            `An account already exists with this email ID. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
+            true
+          );
+          const gotoSignin = document.getElementById('auth-goto-signin');
+          if (gotoSignin) {
+            gotoSignin.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              switchToTab('signin');
+              const signinEmail = document.getElementById('signin-email');
+              if (signinEmail) signinEmail.value = email;
+            });
+          }
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        const { data, error } = await AppState.supabaseClient.auth.signUp({
           email,
           password,
           options: { data: { full_name: name } }
         });
+
         if (error) {
-          showAuthError(`Sign up failed: ${error.message}`);
+          if (error.message.toLowerCase().includes('already registered') || error.message.toLowerCase().includes('user already exists')) {
+            showAuthError(
+              `An account already exists with this email ID. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
+              true
+            );
+            const gotoSignin = document.getElementById('auth-goto-signin');
+            if (gotoSignin) {
+              gotoSignin.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                switchToTab('signin');
+                const signinEmail = document.getElementById('signin-email');
+                if (signinEmail) signinEmail.value = email;
+              });
+            }
+          } else {
+            showAuthError(`Sign up failed: ${error.message}`);
+          }
         } else {
           navigateTo('dashboard');
         }

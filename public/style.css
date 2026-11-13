@@ -661,6 +661,79 @@ body {
   margin-top: 1.5rem;
 }
 
+/* Live Password Requirements Checklist */
+.password-checklist {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.785rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.checklist-item.invalid {
+  color: #dc2626; /* Red when not met */
+}
+
+.checklist-item.valid {
+  color: #16a34a; /* Green when met */
+  font-weight: 600;
+}
+
+.checklist-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.password-match-indicator {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.password-match-indicator.match {
+  color: #16a34a;
+}
+
+.password-match-indicator.mismatch {
+  color: #dc2626;
+}
+
+.auth-switch-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth-switch-link:hover {
+  color: #3730a3;
+}
+
 /* --------------------------------------------------------------------------
    DASHBOARD VIEW
    -------------------------------------------------------------------------- */
