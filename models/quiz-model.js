@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import { getSupabaseAdmin } from '../lib/supabase.js';
 
 /**
@@ -7,13 +9,52 @@ import { getSupabaseAdmin } from '../lib/supabase.js';
  * Enforces atomic transactions via PostgreSQL RPCs, zero answer-key leakage, and user isolation under Row Level Security (RLS)
  */
 
-// In-memory fallback cache if PostgreSQL tables are pending migration in Supabase
+// In-memory & disk fallback cache when PostgreSQL tables are pending migration in Supabase
 const memoryStore = {
   attempts: new Map(),
   questions: new Map(), // Stores public.quiz_questions (WITHOUT correct_option or explanation)
   keys: new Map(),      // Stores public.quiz_question_keys (WITH correct_option and explanation)
   answers: new Map()
 };
+
+const CACHE_DIR = path.resolve(process.cwd(), '.cache');
+const CACHE_FILE = path.join(CACHE_DIR, 'quiz_attempts_store.json');
+
+function loadMemoryStore() {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      const raw = fs.readFileSync(CACHE_FILE, 'utf8');
+      const data = JSON.parse(raw);
+      if (Array.isArray(data.attempts)) data.attempts.forEach(a => memoryStore.attempts.set(a.id, a));
+      if (Array.isArray(data.questions)) data.questions.forEach(q => memoryStore.questions.set(q.id, q));
+      if (Array.isArray(data.keys)) data.keys.forEach(k => memoryStore.keys.set(k.question_id, k));
+      if (data.answers && typeof data.answers === 'object') {
+        Object.entries(data.answers).forEach(([k, v]) => memoryStore.answers.set(k, v));
+      }
+    }
+  } catch (err) {
+    // Non-blocking fallback
+  }
+}
+
+function persistMemoryStore() {
+  try {
+    if (!fs.existsSync(CACHE_DIR)) {
+      fs.mkdirSync(CACHE_DIR, { recursive: true });
+    }
+    const data = {
+      attempts: Array.from(memoryStore.attempts.values()),
+      questions: Array.from(memoryStore.questions.values()),
+      keys: Array.from(memoryStore.keys.values()),
+      answers: Object.fromEntries(memoryStore.answers.entries())
+    };
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (err) {
+    // Non-blocking fallback
+  }
+}
+
+loadMemoryStore();
 
 export const QuizModel = {
   /**
@@ -150,6 +191,7 @@ export const QuizModel = {
     memoryStore.attempts.set(attemptRecord.id, attemptRecord);
     questionRecords.forEach(r => memoryStore.questions.set(r.id, r));
     keyRecords.forEach(k => memoryStore.keys.set(k.question_id, k));
+    persistMemoryStore();
     return { attempt: attemptRecord, questions: questionRecords };
   },
 
@@ -340,6 +382,7 @@ export const QuizModel = {
     existing.completed_at = completedAt;
     existing.updated_at = completedAt;
     memoryStore.attempts.set(attemptId, existing);
+    persistMemoryStore();
 
     return existing;
   },

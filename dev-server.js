@@ -28,28 +28,19 @@ const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   let pathname = parsedUrl.pathname;
 
-  // Handle API Requests: /api/...
-  if (pathname.startsWith('/api/')) {
-    const routePath = pathname.replace('/api/', '');
-    // Support file paths like /api/health or /api/auth/session
-    let targetFile = path.join(API_DIR, `${routePath}.js`);
-    if (!fs.existsSync(targetFile)) {
-      targetFile = path.join(API_DIR, routePath, 'index.js');
-    }
-
-    if (fs.existsSync(targetFile)) {
-      try {
-        const handlerModule = await import(`file://${targetFile}`);
-        const handler = handlerModule.default;
-        if (typeof handler === 'function') {
-          return await handler(req, res);
-        }
-      } catch (err) {
-        console.error(`API Error in ${pathname}:`, err);
-        res.statusCode = 500;
-        res.setHeader('Content-Type', 'application/json');
-        return res.end(JSON.stringify({ success: false, error: 'Internal Server Error' }));
+  // Handle API Requests: /api/... or /api
+  if (pathname.startsWith('/api/') || pathname === '/api') {
+    try {
+      const handlerModule = await import('./api/index.js');
+      const handler = handlerModule.default;
+      if (typeof handler === 'function') {
+        return await handler(req, res);
       }
+    } catch (err) {
+      console.error(`API Error in ${pathname}:`, err);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify({ success: false, error: 'Internal Server Error' }));
     }
 
     res.statusCode = 404;

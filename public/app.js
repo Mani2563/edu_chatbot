@@ -276,6 +276,19 @@ function navigateTo(viewName) {
   }
 
   updateBreadcrumbs();
+
+  // If navigating to dashboard, refresh dynamic metrics immediately
+  if (viewName === 'dashboard') {
+    renderDashboardMetrics();
+    renderDashboardMaterials();
+    // Asynchronously fetch fresh quiz history to guarantee real-time dynamic sync
+    apiRequest('/api/quiz/history').then(res => {
+      if (res && res.success && Array.isArray(res.attempts)) {
+        AppState.quizAttempts = res.attempts;
+        renderDashboardMetrics();
+      }
+    }).catch(() => {});
+  }
 }
 
 function updateBreadcrumbs() {
@@ -350,7 +363,19 @@ async function loadLibrary() {
 
     AppState.documents = docsRes.documents || [];
     AppState.subjects = subjectsRes.subjects || [];
-    AppState.quizAttempts = quizHistoryRes?.attempts || [];
+    AppState.quizAttempts = Array.isArray(quizHistoryRes?.attempts) ? quizHistoryRes.attempts : [];
+
+    // Fallback sync with localStorage cache if present
+    try {
+      const userKey = AppState.currentUser?.id || 'guest';
+      const cached = localStorage.getItem(`gapfinder_quiz_attempts_${userKey}`);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > AppState.quizAttempts.length) {
+          AppState.quizAttempts = parsed;
+        }
+      }
+    } catch {}
 
     if (AppState.subjects.length === 0) {
       AppState.subjects = [{
@@ -1154,7 +1179,7 @@ async function setupInlineQuiz(topic) {
   }
 }
 
-function renderQuizConfigScreen(topic, history = []) {
+function renderQuizConfigScreen(topic, history = null) {
   const container = document.getElementById('quiz-runner-container');
   if (!container) return;
 
@@ -1166,21 +1191,29 @@ function renderQuizConfigScreen(topic, history = []) {
   const currentDiff = AppState.quizEngine.difficulty || 'medium';
   const currentCount = AppState.quizEngine.questionCount || 5;
 
+  // Resolve topic-specific history from parameter or dynamic AppState cache
+  const relevantHistory = (Array.isArray(history) && history.length > 0)
+    ? history
+    : (AppState.quizAttempts || []).filter(a => (a.topic_id === currentTopic.id || a.topicId === currentTopic.id) && (a.status === 'completed' || a.score !== undefined));
+
   let historyHtml = '';
-  if (history && history.length > 0) {
-    const recent = history.slice(0, 3);
+  if (relevantHistory && relevantHistory.length > 0) {
+    const recent = relevantHistory.slice(0, 3);
     const items = recent.map(a => {
       const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
       const pct = parseFloat(a.percentage) || 0;
+      const score = (a.score !== undefined) ? a.score : 0;
+      const totalQ = (a.total_questions || a.totalQuestions || 1);
+      const diff = a.difficulty || 'standard';
       const badgeClass = pct >= 80 ? 'correct' : (pct >= 50 ? '' : 'incorrect');
       return `
         <div class="quiz-history-item">
           <div>
             <strong>${dateStr}</strong>
-            <span class="text-muted" style="margin-left: 0.5rem; text-transform: capitalize;">${escapeHtml(a.difficulty)}</span>
+            <span class="text-muted" style="margin-left: 0.5rem; text-transform: capitalize;">${escapeHtml(diff)}</span>
           </div>
           <div>
-            <span class="quiz-review-status-tag ${badgeClass}">${a.score}/${a.total_questions} (${pct}%)</span>
+            <span class="quiz-review-status-tag ${badgeClass}">${score}/${totalQ} (${pct}%)</span>
           </div>
         </div>
       `;
@@ -1264,12 +1297,23 @@ async function startTopicQuiz() {
   if (!container || !AppState.quizEngine.topic) return;
 
   const topic = AppState.quizEngine.topic;
-  const docId = AppState.selectedDocument?.id;
-  const subId = AppState.selectedSubject?.id;
+  let docId = AppState.selectedDocument?.id || topic?.document_id || topic?.source_document_id;
+  let subId = AppState.selectedSubject?.id || topic?.subject_id;
 
-  if (!subId) {
-    showToast('Please select a subject first', 'error');
-    return;
+  if (!subId && AppState.subjects?.length > 0) {
+    const matching = AppState.subjects.find(s => s.source_document_id === docId) || AppState.subjects[0];
+    if (matching) {
+      subId = matching.id;
+      AppState.selectedSubject = matching;
+    }
+  }
+
+  if (!subId && topic?.subject_id) {
+    subId = topic.subject_id;
+  }
+
+  if (!docId && AppState.selectedSubject?.source_document_id) {
+    docId = AppState.selectedSubject.source_document_id;
   }
 
   // Show loading spinner
@@ -1492,6 +1536,35 @@ async function submitTopicQuiz() {
     if (!res || !res.success) {
       throw new Error(res?.error || 'Failed to submit quiz attempt');
     }
+
+    // Dynamic Real-time Quiz Attempt Recording
+    const newAttempt = {
+      id: res.attemptId || AppState.quizEngine.activeAttempt?.id,
+      subject_id: AppState.selectedSubject?.id,
+      topic_id: AppState.quizEngine.topic?.id,
+      topic_name: AppState.quizEngine.topic?.name,
+      score: res.score,
+      total_questions: res.totalQuestions,
+      percentage: res.percentage,
+      difficulty: AppState.quizEngine.difficulty || 'medium',
+      status: 'completed',
+      created_at: new Date().toISOString()
+    };
+
+    if (!Array.isArray(AppState.quizAttempts)) {
+      AppState.quizAttempts = [];
+    }
+    if (!AppState.quizAttempts.some(a => a.id === newAttempt.id)) {
+      AppState.quizAttempts.unshift(newAttempt);
+    }
+
+    try {
+      const userKey = AppState.currentUser?.id || 'guest';
+      localStorage.setItem(`gapfinder_quiz_attempts_${userKey}`, JSON.stringify(AppState.quizAttempts));
+    } catch {}
+
+    // Immediately update dynamic dashboard metrics
+    renderDashboardMetrics();
 
     renderQuizResults(res);
   } catch (err) {

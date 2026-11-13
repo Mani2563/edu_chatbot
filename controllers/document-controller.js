@@ -4,6 +4,24 @@ import { DocumentService } from '../services/document-service.js';
 
 export const DocumentController = {
   /**
+   * POST /api/documents/upload
+   * Compatibility endpoint: documents are uploaded directly to Supabase Storage client-side,
+   * then registered via /api/documents/process
+   */
+  async upload(req, res) {
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', ['POST']);
+      return sendError(res, 405, 'Method Not Allowed');
+    }
+    return sendJson(res, 200, {
+      success: true,
+      message: 'Direct upload protocol active. Upload file bytes to Supabase Storage, then invoke /api/documents/process'
+    });
+  },
+
+  /**
+   * POST /api/documents/process
+  /**
    * POST /api/documents/process
    * Handles text extraction and metadata storage after direct Storage upload
    */

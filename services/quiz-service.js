@@ -69,7 +69,37 @@ export const QuizService = {
       questionCount = 5
     } = params;
 
-    if (!subjectId) {
+    const userClient = user.accessToken ? getUserSupabaseClient(user.accessToken) : null;
+    const admin = getSupabaseAdmin();
+    const db = userClient || admin;
+
+    let targetSubjectId = subjectId;
+    if (!targetSubjectId && (topicId || chapterId)) {
+      const searchNodeId = topicId || chapterId;
+      const { data: top } = await db
+        .from('topics')
+        .select('subject_id')
+        .eq('id', searchNodeId)
+        .eq('user_id', user.id)
+        .single();
+      if (top?.subject_id) {
+        targetSubjectId = top.subject_id;
+      }
+    }
+
+    if (!targetSubjectId && rawDocId) {
+      const { data: sub } = await db
+        .from('subjects')
+        .select('id')
+        .eq('source_document_id', rawDocId)
+        .eq('user_id', user.id)
+        .single();
+      if (sub?.id) {
+        targetSubjectId = sub.id;
+      }
+    }
+
+    if (!targetSubjectId) {
       throw new Error('Subject ID is required');
     }
 
@@ -80,15 +110,11 @@ export const QuizService = {
 
     const count = Math.max(1, Math.min(15, parseInt(questionCount, 10) || 5));
 
-    const userClient = user.accessToken ? getUserSupabaseClient(user.accessToken) : null;
-    const admin = getSupabaseAdmin();
-    const db = userClient || admin;
-
     // 2. Fetch Subject & strictly verify student ownership
     const { data: subject, error: subErr } = await db
       .from('subjects')
       .select('*')
-      .eq('id', subjectId)
+      .eq('id', targetSubjectId)
       .eq('user_id', user.id) // Enforces ownership integrity
       .single();
 
@@ -112,7 +138,7 @@ export const QuizService = {
         .from('topics')
         .select('*')
         .eq('id', topicId)
-        .eq('subject_id', subjectId)
+        .eq('subject_id', targetSubjectId)
         .eq('user_id', user.id)
         .single();
 
@@ -126,7 +152,7 @@ export const QuizService = {
           .from('topics')
           .select('*')
           .eq('id', top.parent_topic_id)
-          .eq('subject_id', subjectId)
+          .eq('subject_id', targetSubjectId)
           .eq('user_id', user.id)
           .single();
         targetChapter = chap;
@@ -137,7 +163,7 @@ export const QuizService = {
         .from('topics')
         .select('*')
         .eq('id', chapterId)
-        .eq('subject_id', subjectId)
+        .eq('subject_id', targetSubjectId)
         .eq('user_id', user.id)
         .single();
 
@@ -261,7 +287,7 @@ export const QuizService = {
     const attemptPayload = {
       id: attemptId,
       userId: user.id,
-      subjectId,
+      subjectId: targetSubjectId,
       sourceDocumentId: documentId,
       chapterId: targetChapter?.id || chapterId || null,
       topicId: targetTopic?.id || topicId || null,
