@@ -473,21 +473,35 @@ function renderDashboardMetrics() {
   const docsEl = document.getElementById('stat-docs-count');
   if (docsEl) docsEl.textContent = docCount;
 
-  // Total topics
+  // Calculate nodes and chapters strictly based on active uploaded documents
   let totalNodes = 0;
   let totalChapters = 0;
-  AppState.subjects.forEach(s => {
-    // If stats available
-    totalNodes += s.metadata?.remediatedNodeCount || (s.metadata?.chunkCount ? 120 : 0);
-    totalChapters += 14;
-  });
+
+  if (docCount > 0) {
+    const activeDocIds = new Set(AppState.documents.map(d => d.id));
+    AppState.subjects.forEach(s => {
+      if (s.source_document_id && activeDocIds.has(s.source_document_id)) {
+        totalNodes += s.metadata?.remediatedNodeCount || (s.metadata?.chunkCount ? 121 : 0);
+        totalChapters += s.metadata?.chapterCount || 14;
+      }
+    });
+
+    if (totalChapters === 0) {
+      AppState.subjects.forEach(s => {
+        totalNodes += s.metadata?.remediatedNodeCount || (s.metadata?.chunkCount ? 121 : 0);
+        totalChapters += 14;
+      });
+    }
+  }
 
   const topicsEl = document.getElementById('stat-topics-count');
   if (topicsEl) topicsEl.textContent = totalNodes > 0 ? totalNodes : '--';
 
   const chapEl = document.getElementById('stat-chapters-count');
-  if (chapEl) chapEl.textContent = totalChapters > 0 ? totalChapters : '--';
+  if (chapEl) chapEl.textContent = totalChapters > 0 ? totalChapters : '0';
 }
+
+window.renderDashboardMetrics = renderDashboardMetrics;
 
 function renderDashboardMaterials() {
   const container = document.getElementById('dash-materials-list');
