@@ -1089,12 +1089,40 @@ ${chunkContext}`;
   },
 
   /**
-   * List all subjects for user
+   * List all subjects for user, enriched with real chapter and node counts from database
    */
   async listSubjects(user) {
     if (!user || !user.accessToken) throw new Error('Authentication required');
     const userClient = getUserSupabaseClient(user.accessToken);
-    return await TopicModel.listSubjects(userClient);
+    const subjects = await TopicModel.listSubjects(userClient);
+
+    // Dynamically calculate genuine counts of chapters, topics, and curriculum nodes
+    const enriched = await Promise.all(subjects.map(async (s) => {
+      try {
+        const topics = await TopicModel.getTopicsBySubject(userClient, s.id);
+        const chapters = topics.filter(t => t.hierarchy_level === 'chapter' || !t.parent_topic_id);
+        const topicNodes = topics.filter(t => t.hierarchy_level === 'topic');
+        const subtopicNodes = topics.filter(t => t.hierarchy_level === 'subtopic');
+
+        return {
+          ...s,
+          chapterCount: chapters.length,
+          topicCount: topicNodes.length,
+          subtopicCount: subtopicNodes.length,
+          nodeCount: topics.length > 0 ? (topics.length + 1) : 0 // +1 for the document root node
+        };
+      } catch (err) {
+        return {
+          ...s,
+          chapterCount: s.metadata?.chapterCount || 0,
+          topicCount: 0,
+          subtopicCount: 0,
+          nodeCount: 0
+        };
+      }
+    }));
+
+    return enriched;
   },
 
   /**

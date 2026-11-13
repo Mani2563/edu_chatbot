@@ -47,3 +47,4 @@ export default async function handler(req, res) {
     return sendError(res, 500, 'Error checking email existence');
   }
 }
+

@@ -342,13 +342,15 @@ async function loadLibrary() {
   }
 
   try {
-    const [docsRes, subjectsRes] = await Promise.all([
+    const [docsRes, subjectsRes, quizHistoryRes] = await Promise.all([
       apiRequest('/api/documents/list'),
-      apiRequest('/api/topics/list')
+      apiRequest('/api/topics/list'),
+      apiRequest('/api/quiz/history').catch(() => ({ attempts: [] }))
     ]);
 
     AppState.documents = docsRes.documents || [];
     AppState.subjects = subjectsRes.subjects || [];
+    AppState.quizAttempts = quizHistoryRes?.attempts || [];
 
     if (AppState.subjects.length === 0) {
       AppState.subjects = [{
@@ -415,12 +417,19 @@ function renderLibrarySubjects(subjects, documents) {
         <div class="lib-docs-list" id="docs-list-${sub.id}">
           ${sub.docs.map(d => `
             <div class="lib-doc-item ${AppState.selectedDocument?.id === d.id ? 'active' : ''}" 
-                 onclick="selectDocument('${d.id}', '${sub.id}')">
+                 onclick="selectDocument('${d.id}', '${sub.id}')"
+                 title="${escapeHtml(d.file_name)}">
               <div class="lib-doc-title">
                 <span>📄</span>
                 <span>${escapeHtml(d.file_name)}</span>
               </div>
-              <span class="badge" style="font-size:0.65rem;">${d.file_type.toUpperCase()}</span>
+              <div class="lib-doc-actions">
+                <button type="button" class="lib-doc-ai-btn" 
+                        onclick="event.stopPropagation(); openAiDrawerForDocument('${d.id}')" 
+                        title="Chat with AI about this document">
+                  ✨ Ask AI
+                </button>
+              </div>
             </div>
           `).join('')}
         </div>
@@ -442,12 +451,19 @@ function renderLibrarySubjects(subjects, documents) {
         <div class="lib-docs-list" id="docs-list-general">
           ${unassignedDocs.map(d => `
             <div class="lib-doc-item ${AppState.selectedDocument?.id === d.id ? 'active' : ''}" 
-                 onclick="selectDocument('${d.id}', null)">
+                 onclick="selectDocument('${d.id}', null)"
+                 title="${escapeHtml(d.file_name)}">
               <div class="lib-doc-title">
                 <span>📄</span>
                 <span>${escapeHtml(d.file_name)}</span>
               </div>
-              <span class="badge" style="font-size:0.65rem;">${d.file_type.toUpperCase()}</span>
+              <div class="lib-doc-actions">
+                <button type="button" class="lib-doc-ai-btn" 
+                        onclick="event.stopPropagation(); openAiDrawerForDocument('${d.id}')" 
+                        title="Chat with AI about this document">
+                  ✨ Ask AI
+                </button>
+              </div>
             </div>
           `).join('')}
         </div>
@@ -481,24 +497,36 @@ function renderDashboardMetrics() {
     const activeDocIds = new Set(AppState.documents.map(d => d.id));
     AppState.subjects.forEach(s => {
       if (s.source_document_id && activeDocIds.has(s.source_document_id)) {
-        totalNodes += s.metadata?.remediatedNodeCount || (s.metadata?.chunkCount ? 121 : 0);
-        totalChapters += s.metadata?.chapterCount || 14;
+        totalNodes += (typeof s.nodeCount === 'number') ? s.nodeCount : (s.metadata?.remediatedNodeCount || 0);
+        totalChapters += (typeof s.chapterCount === 'number') ? s.chapterCount : (s.metadata?.chapterCount || 0);
       }
     });
 
-    if (totalChapters === 0) {
+    if (totalChapters === 0 && AppState.subjects.length > 0) {
       AppState.subjects.forEach(s => {
-        totalNodes += s.metadata?.remediatedNodeCount || (s.metadata?.chunkCount ? 121 : 0);
-        totalChapters += 14;
+        totalNodes += (typeof s.nodeCount === 'number') ? s.nodeCount : (s.metadata?.remediatedNodeCount || 0);
+        totalChapters += (typeof s.chapterCount === 'number') ? s.chapterCount : (s.metadata?.chapterCount || 0);
       });
+    }
+
+    if (totalChapters === 0 && docCount > 0) {
+      totalChapters = docCount;
+      totalNodes = docCount + 1;
     }
   }
 
   const topicsEl = document.getElementById('stat-topics-count');
-  if (topicsEl) topicsEl.textContent = totalNodes > 0 ? totalNodes : '--';
+  if (topicsEl) topicsEl.textContent = (docCount > 0 && totalNodes > 0) ? totalNodes : (docCount > 0 ? docCount : '--');
 
   const chapEl = document.getElementById('stat-chapters-count');
-  if (chapEl) chapEl.textContent = totalChapters > 0 ? totalChapters : '0';
+  if (chapEl) chapEl.textContent = docCount > 0 ? totalChapters : '0';
+
+  // Dynamic Quizzes Attempted Metric (Replacing static citation parity)
+  const attemptsCount = Array.isArray(AppState.quizAttempts) ? AppState.quizAttempts.length : 0;
+  const quizEl = document.getElementById('stat-quizzes-count');
+  if (quizEl) quizEl.textContent = attemptsCount;
+  const legacyMasteredEl = document.getElementById('stat-mastered-count');
+  if (legacyMasteredEl) legacyMasteredEl.textContent = attemptsCount;
 }
 
 window.renderDashboardMetrics = renderDashboardMetrics;
@@ -671,96 +699,127 @@ function renderCurriculumTree(doc, chapters) {
   chapters.forEach((ch, chIdx) => {
     const chId = `tree-node-ch-${chIdx + 1}`;
     const chTopics = ch.children || ch.topics || [];
+    const hasTopics = chTopics.length > 0;
 
-    html += `
-      <div class="tree-node node-chapter collapsed" id="${chId}">
-        <div class="tree-node-row" onclick="toggleTreeNode('${chId}')">
-          <div class="tree-node-left">
-            <span class="tree-chevron">▶</span>
-            <span class="tree-node-icon">📖</span>
-            <span class="tree-node-title">${escapeHtml(ch.name)}</span>
-          </div>
-          <span class="tree-node-badge">${chTopics.length} topics</span>
-        </div>
-        <div class="tree-children">
-    `;
-
-    // Render Topics under Chapter
-    chTopics.forEach((top, topIdx) => {
-      const topId = `${chId}-top-${topIdx + 1}`;
-      const subtopics = top.children || top.subtopics || [];
-      const hasSubs = subtopics.length > 0;
-      const ref = top.source_references?.[0];
-
-      // Register topic in in-memory tree map (No JSON in HTML!)
-      window.TreeNodeData.set(topId, {
-        id: topId,
-        topic: top,
-        chapter: ch,
-        hasSubs: hasSubs
-      });
-
-      html += `
-        <div class="tree-node node-topic collapsed ${hasSubs ? '' : 'empty'}" id="${topId}">
-          <div class="tree-node-row" onclick="handleTopicNodeClick('${topId}')">
-            <div class="tree-node-left">
-              <span class="tree-chevron" style="${hasSubs ? 'cursor:pointer;' : ''}" onclick="${hasSubs ? `event.stopPropagation(); toggleTreeNode('${topId}')` : ''}">${hasSubs ? '▶' : '•'}</span>
-              <span class="tree-node-icon">📌</span>
-              <span class="tree-node-title">${escapeHtml(top.name)}</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-              ${ref?.pageNumber ? `<span class="tree-node-badge">p. ${ref.pageNumber}</span>` : ''}
-              ${hasSubs ? `<span class="tree-node-badge" style="background:#e0e7ff; color:#4338ca; font-weight:600; cursor:pointer;" onclick="event.stopPropagation(); toggleTreeNode('${topId}')">${subtopics.length} subs</span>` : ''}
-              <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" onclick="event.stopPropagation(); openTopicWorkspaceFromId('${topId}')">
-                Study ›
-              </button>
-            </div>
-          </div>
-      `;
-
-      // Render Subtopics if any
-      if (hasSubs) {
-        html += `<div class="tree-children">`;
-        subtopics.forEach((sub, subIdx) => {
-          const subId = `${topId}-sub-${subIdx + 1}`;
-          const subRef = sub.source_references?.[0];
-
-          // Register subtopic in in-memory tree map
-          window.TreeNodeData.set(subId, {
-            id: subId,
-            topic: sub,
-            chapter: ch,
-            hasSubs: false
-          });
-
-          html += `
-            <div class="tree-node node-subtopic empty" id="${subId}">
-              <div class="tree-node-row" onclick="handleTopicNodeClick('${subId}')">
-                <div class="tree-node-left">
-                  <span class="tree-chevron">•</span>
-                  <span class="tree-node-icon">🔹</span>
-                  <span class="tree-node-title">${escapeHtml(sub.name)}</span>
-                </div>
-                <div style="display:flex; align-items:center; gap:0.5rem;">
-                  ${subRef?.pageNumber ? `<span class="tree-node-badge">p. ${subRef.pageNumber}</span>` : ''}
-                  <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" onclick="event.stopPropagation(); openTopicWorkspaceFromId('${subId}')">
-                    Study ›
-                  </button>
-                </div>
-              </div>
-            </div>
-          `;
-        });
-        html += `</div>`;
-      }
-
-      html += `</div>`;
+    // Register chapter in in-memory tree map so it can be studied or quizzed directly
+    window.TreeNodeData.set(chId, {
+      id: chId,
+      topic: ch,
+      chapter: ch,
+      hasSubs: hasTopics
     });
 
     html += `
+      <div class="tree-node node-chapter ${hasTopics ? 'collapsed' : 'empty'}" id="${chId}">
+        <div class="tree-node-row" onclick="${hasTopics ? `toggleTreeNode('${chId}')` : `launchQuizForNode('${chId}')`}">
+          <div class="tree-node-left">
+            ${hasTopics 
+              ? `<span class="tree-chevron" style="cursor:pointer;" onclick="event.stopPropagation(); toggleTreeNode('${chId}')">▶</span>` 
+              : `<span class="tree-chevron" style="opacity:0.35; cursor:default;">•</span>`
+            }
+            <span class="tree-node-icon">📖</span>
+            <span class="tree-node-title">${escapeHtml(ch.name)}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.45rem;">
+            <span class="tree-node-badge">${hasTopics ? `${chTopics.length} topics` : 'Chapter Unit'}</span>
+            <button class="btn btn-primary btn-sm" style="padding:0.2rem 0.65rem; font-size:0.75rem;" 
+                    onclick="event.stopPropagation(); launchQuizForNode('${chId}')" title="Start diagnostic quiz on ${escapeHtml(ch.name)}">
+              🎯 Take Quiz
+            </button>
+            <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" 
+                    onclick="event.stopPropagation(); openTopicWorkspaceFromId('${chId}')">
+              Study ›
+            </button>
+          </div>
         </div>
-      </div>
     `;
+
+    // Only render children container if there are topics to avoid empty dropdown void
+    if (hasTopics) {
+      html += `<div class="tree-children">`;
+
+      // Render Topics under Chapter
+      chTopics.forEach((top, topIdx) => {
+        const topId = `${chId}-top-${topIdx + 1}`;
+        const subtopics = top.children || top.subtopics || [];
+        const hasSubs = subtopics.length > 0;
+        const ref = top.source_references?.[0];
+
+        // Register topic in in-memory tree map (No JSON in HTML!)
+        window.TreeNodeData.set(topId, {
+          id: topId,
+          topic: top,
+          chapter: ch,
+          hasSubs: hasSubs
+        });
+
+        html += `
+          <div class="tree-node node-topic collapsed ${hasSubs ? '' : 'empty'}" id="${topId}">
+            <div class="tree-node-row" onclick="handleTopicNodeClick('${topId}')">
+              <div class="tree-node-left">
+                <span class="tree-chevron" style="${hasSubs ? 'cursor:pointer;' : ''}" onclick="${hasSubs ? `event.stopPropagation(); toggleTreeNode('${topId}')` : ''}">${hasSubs ? '▶' : '•'}</span>
+                <span class="tree-node-icon">📌</span>
+                <span class="tree-node-title">${escapeHtml(top.name)}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.45rem;">
+                ${ref?.pageNumber ? `<span class="tree-node-badge">p. ${ref.pageNumber}</span>` : ''}
+                ${hasSubs ? `<span class="tree-node-badge" style="background:#e0e7ff; color:#4338ca; font-weight:600; cursor:pointer;" onclick="event.stopPropagation(); toggleTreeNode('${topId}')">${subtopics.length} subs</span>` : ''}
+                <button class="btn btn-primary btn-sm" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="event.stopPropagation(); launchQuizForNode('${topId}')" title="Take diagnostic quiz on ${escapeHtml(top.name)}">
+                  🎯 Quiz
+                </button>
+                <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" onclick="event.stopPropagation(); openTopicWorkspaceFromId('${topId}')">
+                  Study ›
+                </button>
+              </div>
+            </div>
+        `;
+
+        // Render Subtopics if any
+        if (hasSubs) {
+          html += `<div class="tree-children">`;
+          subtopics.forEach((sub, subIdx) => {
+            const subId = `${topId}-sub-${subIdx + 1}`;
+            const subRef = sub.source_references?.[0];
+
+            // Register subtopic in in-memory tree map
+            window.TreeNodeData.set(subId, {
+              id: subId,
+              topic: sub,
+              chapter: ch,
+              hasSubs: false
+            });
+
+            html += `
+              <div class="tree-node node-subtopic empty" id="${subId}">
+                <div class="tree-node-row" onclick="handleTopicNodeClick('${subId}')">
+                  <div class="tree-node-left">
+                    <span class="tree-chevron">•</span>
+                    <span class="tree-node-icon">🔹</span>
+                    <span class="tree-node-title">${escapeHtml(sub.name)}</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:0.45rem;">
+                    ${subRef?.pageNumber ? `<span class="tree-node-badge">p. ${subRef.pageNumber}</span>` : ''}
+                    <button class="btn btn-primary btn-sm" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="event.stopPropagation(); launchQuizForNode('${subId}')" title="Take quiz">
+                      🎯 Quiz
+                    </button>
+                    <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" onclick="event.stopPropagation(); openTopicWorkspaceFromId('${subId}')">
+                      Study ›
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        html += `</div>`;
+      });
+
+      html += `</div>`;
+    }
+
+    html += `</div>`;
   });
 
   html += `
@@ -855,9 +914,31 @@ function openTopicWorkspaceFromId(nodeId) {
   }
 }
 
+function launchQuizForNode(nodeId) {
+  const data = window.TreeNodeData?.get(nodeId);
+  if (data?.topic) {
+    openTopicWorkspace(data.topic, data.chapter);
+    switchTopicTab('quiz');
+  }
+}
+
+function launchQuizForCurrentDocument() {
+  if (!AppState.curriculumTree || AppState.curriculumTree.length === 0) {
+    showToast('Please extract curriculum hierarchy first.', 'warning');
+    return;
+  }
+  const firstChapter = AppState.curriculumTree[0];
+  const firstTopic = firstChapter.children?.[0] || firstChapter.topics?.[0] || firstChapter;
+  openTopicWorkspace(firstTopic, firstChapter);
+  switchTopicTab('quiz');
+}
+
 // Global exports for inline HTML event handlers and backwards compatibility
 window.toggleTreeNode = toggleTreeNode;
 window.handleTopicNodeClick = handleTopicNodeClick;
+window.openTopicWorkspaceFromId = openTopicWorkspaceFromId;
+window.launchQuizForNode = launchQuizForNode;
+window.launchQuizForCurrentDocument = launchQuizForCurrentDocument;
 window.setAllTreeNodes = setAllTreeNodes;
 window.handleTopicRowClick = function(event, nodeId, topic, chapter) {
   if (event) {
@@ -1581,6 +1662,95 @@ function setupAiDrawer() {
   });
 }
 
+// ============================================================================
+// Per-Document AI Chat Management (Isolated Sessions per PDF)
+// ============================================================================
+AppState.activeChatDocId = null;
+AppState.docChatHistories = {};
+
+function getDocChatStorageKey(docId) {
+  const uid = AppState.user?.id || 'guest';
+  return `gapfinder_chat_${uid}_${docId}`;
+}
+
+function getChatHistoryForDoc(docId) {
+  if (!docId) return [];
+  if (AppState.docChatHistories[docId]) {
+    return AppState.docChatHistories[docId];
+  }
+  try {
+    const raw = localStorage.getItem(getDocChatStorageKey(docId));
+    if (raw) {
+      AppState.docChatHistories[docId] = JSON.parse(raw);
+      return AppState.docChatHistories[docId];
+    }
+  } catch (e) {
+    console.warn('Error reading chat history for doc:', e);
+  }
+  AppState.docChatHistories[docId] = [];
+  return AppState.docChatHistories[docId];
+}
+
+function saveChatHistoryForDoc(docId, messages) {
+  if (!docId) return;
+  AppState.docChatHistories[docId] = messages;
+  try {
+    localStorage.setItem(getDocChatStorageKey(docId), JSON.stringify(messages));
+  } catch (e) {
+    console.warn('Error saving chat history for doc:', e);
+  }
+}
+
+function openAiDrawerForDocument(docId) {
+  const doc = AppState.documents.find(d => d.id === docId);
+  if (!doc) return;
+
+  AppState.selectedDocument = doc;
+  AppState.activeChatDocId = doc.id;
+
+  renderDocChatThread(doc);
+  openAiDrawer();
+}
+
+function renderDocChatThread(doc) {
+  if (!doc) return;
+
+  const messagesContainer = document.getElementById('ai-drawer-messages');
+  const docBar = document.getElementById('ai-drawer-doc-bar');
+  const docNameEl = document.getElementById('ai-drawer-active-doc-name');
+  const mainTitle = document.getElementById('ai-drawer-main-title');
+  const contextLabel = document.getElementById('ai-drawer-context-label');
+  const contextText = document.getElementById('ai-drawer-context-text');
+
+  if (docBar) docBar.style.display = 'flex';
+  if (docNameEl) docNameEl.textContent = doc.file_name;
+  if (mainTitle) mainTitle.textContent = `✨ ${doc.file_name}`;
+  if (contextLabel) contextLabel.textContent = `Isolated PDF Chat Assistant`;
+  if (contextText) contextText.textContent = `Document: ${doc.file_name}`;
+
+  if (!messagesContainer) return;
+  messagesContainer.innerHTML = '';
+
+  const history = getChatHistoryForDoc(doc.id);
+
+  if (history.length === 0) {
+    messagesContainer.innerHTML = `
+      <div class="ai-bubble ai-bubble-assistant">
+        <p>👋 Hello! I am your AI assistant for <strong>${escapeHtml(doc.file_name)}</strong>.</p>
+        <p style="font-size:0.835rem; margin-top:0.35rem; color:var(--text-muted);">
+          Ask any question about this document. All explanations and citations are retrieved strictly from <em>${escapeHtml(doc.file_name)}</em> and will never mix with other PDFs.
+        </p>
+      </div>
+    `;
+  } else {
+    history.forEach(m => {
+      appendChatBubble(m.role, m.content, m.citation);
+    });
+  }
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
 function toggleAiDrawer() {
   const drawer = document.getElementById('ai-drawer');
   const backdrop = document.getElementById('ai-drawer-backdrop');
@@ -1629,19 +1799,27 @@ function openAiDrawerForCurrentTopic() {
 function updateAiDrawerContext() {
   const textEl = document.getElementById('ai-drawer-context-text');
   const labelEl = document.getElementById('ai-drawer-context-label');
+  const docBar = document.getElementById('ai-drawer-doc-bar');
+  const docNameEl = document.getElementById('ai-drawer-active-doc-name');
   if (!textEl) return;
 
-  if (AppState.selectedTopic) {
+  const activeDoc = AppState.documents.find(d => d.id === AppState.activeChatDocId) || AppState.selectedDocument;
+
+  if (activeDoc) {
+    if (docBar) docBar.style.display = 'flex';
+    if (docNameEl) docNameEl.textContent = activeDoc.file_name;
+    textEl.textContent = `Document: ${activeDoc.file_name}`;
+    if (labelEl) labelEl.textContent = 'Isolated Document Chat Active';
+  } else if (AppState.selectedTopic) {
     const chap = AppState.selectedChapter?.name || 'Chapter';
     const top = AppState.selectedTopic.name;
     textEl.textContent = `${chap} › ${top}`;
     if (labelEl) labelEl.textContent = 'Topic Context Active';
-  } else if (AppState.selectedDocument) {
-    textEl.textContent = `Document: ${AppState.selectedDocument.file_name}`;
-    if (labelEl) labelEl.textContent = 'Document Context Active';
+    if (docBar) docBar.style.display = 'none';
   } else {
     textEl.textContent = 'General Study Assistant';
     if (labelEl) labelEl.textContent = 'General Context';
+    if (docBar) docBar.style.display = 'none';
   }
 }
 
@@ -1654,14 +1832,21 @@ async function submitAiPrompt() {
   const query = input.value.trim();
   if (!query) return;
 
-  // Add User Message
+  const activeDoc = AppState.documents.find(d => d.id === AppState.activeChatDocId) || AppState.selectedDocument;
+  const docId = activeDoc?.id;
+
   input.value = '';
   if (sendBtn) sendBtn.disabled = true;
 
+  // Add User Message to UI & active doc's separate history
   appendChatBubble('user', query);
 
+  const history = docId ? getChatHistoryForDoc(docId) : [];
+  history.push({ role: 'user', content: query, timestamp: Date.now() });
+  if (docId) saveChatHistoryForDoc(docId, history);
+
   // Add Loading Bubble
-  const loadingBubble = appendChatBubble('assistant', 'Searching verified study materials...');
+  const loadingBubble = appendChatBubble('assistant', `Searching verified study materials in ${activeDoc ? activeDoc.file_name : 'document'}...`);
 
   try {
     const topicContext = AppState.selectedTopic ? `Context Topic: ${AppState.selectedTopic.name}. ` : '';
@@ -1672,26 +1857,41 @@ async function submitAiPrompt() {
       body: JSON.stringify({
         query: fullQuery,
         limit: 3,
-        documentId: AppState.selectedDocument?.id
+        documentId: docId
       })
     });
+
+    let assistantContent = '';
+    let citation = null;
 
     if (res.success && res.chunks && res.chunks.length > 0) {
       const topChunk = res.chunks[0];
       const pageInfo = topChunk.page_number ? `(Page ${topChunk.page_number})` : '';
-      const responseText = `Based on your textbook <em>${escapeHtml(AppState.selectedDocument?.file_name || 'materials')}</em> ${pageInfo}:<br><br>${escapeHtml(topChunk.content).substring(0, 320)}...`;
+      assistantContent = `Based on your uploaded material <em>${escapeHtml(activeDoc?.file_name || 'materials')}</em> ${pageInfo}:<br><br>${escapeHtml(topChunk.content).substring(0, 320)}...`;
+      citation = {
+        sectionTitle: topChunk.section_title || 'Verified Section',
+        pageNumber: topChunk.page_number
+      };
 
       loadingBubble.innerHTML = `
-        <p>${responseText}</p>
+        <p>${assistantContent}</p>
         <div class="ai-citation-card">
-          <strong>Verified Source:</strong> ${escapeHtml(topChunk.section_title || 'Syllabus Section')} ${pageInfo}
+          <strong>Verified Source:</strong> ${escapeHtml(citation.sectionTitle)} ${pageInfo}
         </div>
       `;
     } else {
-      loadingBubble.innerHTML = `
-        <p>I reviewed your uploaded materials for <strong>${escapeHtml(AppState.selectedTopic?.name || 'this question')}</strong>. Please ensure the document text contains this specific query.</p>
-      `;
+      assistantContent = `I reviewed <strong>${escapeHtml(activeDoc?.file_name || 'your uploaded materials')}</strong> for "${escapeHtml(query)}", but could not find a direct citation. Try asking about a specific topic or section from this document.`;
+      loadingBubble.innerHTML = `<p>${assistantContent}</p>`;
     }
+
+    history.push({
+      role: 'assistant',
+      content: assistantContent,
+      citation: citation,
+      timestamp: Date.now()
+    });
+    if (docId) saveChatHistoryForDoc(docId, history);
+
   } catch (err) {
     loadingBubble.innerHTML = `<p style="color:#ef4444;">Error retrieving context: ${escapeHtml(err.message)}</p>`;
   } finally {
@@ -1700,17 +1900,34 @@ async function submitAiPrompt() {
   }
 }
 
-function appendChatBubble(role, text) {
+function appendChatBubble(role, content, citation = null) {
   const container = document.getElementById('ai-drawer-messages');
   if (!container) return null;
 
   const bubble = document.createElement('div');
   bubble.className = `ai-bubble ai-bubble-${role}`;
-  bubble.innerHTML = `<p>${escapeHtml(text)}</p>`;
+
+  if (role === 'user') {
+    bubble.textContent = content;
+  } else {
+    bubble.innerHTML = `<p>${content}</p>`;
+    if (citation) {
+      const pageInfo = citation.pageNumber ? `(Page ${citation.pageNumber})` : '';
+      bubble.innerHTML += `
+        <div class="ai-citation-card">
+          <strong>Verified Source:</strong> ${escapeHtml(citation.sectionTitle || 'Textbook Excerpt')} ${pageInfo}
+        </div>
+      `;
+    }
+  }
+
   container.appendChild(bubble);
   container.scrollTop = container.scrollHeight;
   return bubble;
 }
+
+window.openAiDrawerForDocument = openAiDrawerForDocument;
+window.renderDocChatThread = renderDocChatThread;
 
 // ============================================================================
 // Document Upload Experience (Section 5)
