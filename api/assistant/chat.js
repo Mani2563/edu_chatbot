@@ -108,15 +108,15 @@ export default async function handler(req, res) {
       const systemPrompt = `You are GapFinder AI Assistant, an expert, patient, and pedagogical learning tutor.
 Your goal is to explain concepts clearly, simply, and accurately, helping students overcome learning gaps.
 
-CORE TUTORING PRINCIPLES:
+FORMATTING & CLARITY RULES:
 1. Always give a direct, friendly, and complete answer to the student's question.
-2. If the student asks to "explain what is percentages" or "explain me", break down the concept into:
-   - What it means in plain English.
-   - Core definition and formulas.
-   - A clear, practical step-by-step example with numbers.
-3. Ground your explanation in the student's uploaded document "${docName}" when context is provided.
-4. Keep the tone supportive, encouraging, and easy to understand.
-5. Use markdown formatting with clear headings, bullet points, and formulas.`;
+2. DO NOT output useless raw markdown symbols like "##", "###", "---", or LaTeX markup like "\\[", "\\]", "\\(", "\\)", "\\dfrac", "\\times".
+3. Write clean, readable headings naturally without hashes (e.g. "Learning Objectives" or "Why This Matters").
+4. For lists, write clean bullets using "• " or numbers "1. ", "2. ".
+5. For math, write standard arithmetic (e.g. "12 / 40 = 30%").
+6. Ground your explanation in the student's uploaded document "${docName}" when context is provided.
+7. Keep the tone supportive, encouraging, and easy to understand.
+8. DO NOT use ASCII markdown tables with vertical bars '|' and dashes '---'. Present items with clean bullet lists instead.`;
 
       const userPrompt = `STUDENT QUESTION: "${cleanMessage}"
 
@@ -143,18 +143,33 @@ Please provide a clear, helpful, and grounded tutoring response to help the stud
       if (relevantChunks.length > 0) {
         const topChunk = relevantChunks[0];
         const pageStr = topChunk.page_number ? ` (Page ${topChunk.page_number})` : '';
-        replyText = `Based on your uploaded material **${targetDoc?.file_name || 'study notes'}**${pageStr}:\n\n` +
+        replyText = `Based on your uploaded material ${targetDoc?.file_name || 'study notes'}${pageStr}:\n\n` +
           `${topChunk.content.slice(0, 350)}...\n\n` +
-          `**Key Takeaway**: Review this section in your document to reinforce your understanding. You can also take a diagnostic quiz to test your mastery!`;
+          `Key Takeaway: Review this section in your document to reinforce your understanding. You can also take a diagnostic quiz to test your mastery!`;
       } else {
-        replyText = `I reviewed **${targetDoc?.file_name || 'your uploaded study materials'}** for "${cleanMessage}".\n\n` +
-          `**Tip**: To get the most accurate answers, ask about specific concepts, formulas, or chapter topics found in your document, or click "Take Quiz" to diagnose your understanding!`;
+        replyText = `I reviewed ${targetDoc?.file_name || 'your uploaded study materials'} for "${cleanMessage}".\n\n` +
+          `Tip: To get the most accurate answers, ask about specific concepts, formulas, or chapter topics found in your document, or click "Take Quiz" to diagnose your understanding!`;
       }
     }
 
+    // Clean any lingering raw LaTeX or formatting symbols before sending
+    const cleanedReply = replyText
+      .replace(/\\\[/g, '')
+      .replace(/\\\]/g, '')
+      .replace(/\\\(/g, '')
+      .replace(/\\\)/g, '')
+      .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 / $2')
+      .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 / $2')
+      .replace(/\\times/g, '×')
+      .replace(/\\div/g, '÷')
+      .replace(/\\text\{([^}]+)\}/g, '$1')
+      .replace(/\\displaystyle/g, '')
+      .replace(/\\%/g, '%')
+      .replace(/\r\n/g, '\n');
+
     return sendJson(res, 200, {
       success: true,
-      reply: replyText,
+      reply: cleanedReply,
       citations: citations,
       documentName: targetDoc?.file_name || null
     });

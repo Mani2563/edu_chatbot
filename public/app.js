@@ -1867,15 +1867,11 @@ async function submitAiPrompt() {
     let citation = null;
 
     if (res && res.success && res.reply) {
-      // Convert markdown-style bold and paragraphs to clean HTML for rendering
-      assistantContent = escapeHtml(res.reply)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/\n/g, '<br>');
-
+      assistantContent = res.reply;
       citation = res.citations && res.citations.length > 0 ? res.citations[0] : null;
 
-      loadingBubble.innerHTML = `<p>${assistantContent}</p>`;
+      // Render clean formatted HTML stripping useless markdown symbols
+      loadingBubble.innerHTML = formatAiMessage(res.reply);
       if (citation) {
         const pageInfo = citation.pageNumber ? `(Page ${citation.pageNumber})` : '';
         loadingBubble.innerHTML += `
@@ -1885,8 +1881,8 @@ async function submitAiPrompt() {
         `;
       }
     } else {
-      assistantContent = `I reviewed <strong>${escapeHtml(activeDoc?.file_name || 'your uploaded materials')}</strong> for "${escapeHtml(query)}", but could not find a direct citation. Try asking about a specific topic or section from this document.`;
-      loadingBubble.innerHTML = `<p>${assistantContent}</p>`;
+      assistantContent = `I reviewed ${escapeHtml(activeDoc?.file_name || 'your uploaded materials')} for "${escapeHtml(query)}", but could not find a direct citation. Try asking about a specific topic or section from this document.`;
+      loadingBubble.innerHTML = `<p class="ai-msg-p">${assistantContent}</p>`;
     }
 
     history.push({
@@ -1905,6 +1901,123 @@ async function submitAiPrompt() {
   }
 }
 
+/**
+ * Cleanly format AI assistant responses, eliminating useless raw markdown artifacts
+ * (##, ###, ---, *(...)*, bullets -, LaTeX markup) and rendering clean styled HTML.
+ */
+function formatAiMessage(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  let text = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+  // 1. Clean LaTeX and math markup
+  text = text
+    .replace(/\\\[/g, '')
+    .replace(/\\\]/g, '')
+    .replace(/\\\(/g, '')
+    .replace(/\\\)/g, '')
+    .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 / $2')
+    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 / $2')
+    .replace(/\\times/g, '×')
+    .replace(/\\div/g, '÷')
+    .replace(/\\text\{([^}]+)\}/g, '$1')
+    .replace(/\\displaystyle/g, '')
+    .replace(/\\%/g, '%');
+
+  const lines = text.split('\n');
+  const htmlParts = [];
+  let inTable = false;
+  let tableRows = [];
+
+  function flushTable() {
+    if (tableRows.length === 0) return;
+    let tableHtml = '<table class="ai-msg-table"><thead>';
+    const headerRow = tableRows[0];
+    tableHtml += '<tr>' + headerRow.map(c => `<th>${escapeHtml(c.trim())}</th>`).join('') + '</tr></thead><tbody>';
+    for (let r = 1; r < tableRows.length; r++) {
+      tableHtml += '<tr>' + tableRows[r].map(c => `<td>${escapeHtml(c.trim())}</td>`).join('') + '</tr>';
+    }
+    tableHtml += '</tbody></table>';
+    htmlParts.push(tableHtml);
+    tableRows = [];
+    inTable = false;
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    let trimmed = line.trim();
+
+    // Check if line is a table row (starts and ends with pipe, or has multiple pipes)
+    if (/^\|(.+)\|$/.test(trimmed)) {
+      // Check if it's the divider row like |---|---| or |:---|---:|
+      if (/^\|?(\s*:?-{2,}:?\s*\|)+\s*:?-{2,}:?\s*\|?$/.test(trimmed)) {
+        // Discard the divider dashes between header and rows completely
+        continue;
+      }
+      const cells = trimmed.replace(/^\|/, '').replace(/\|$/, '').split('|');
+      tableRows.push(cells);
+      inTable = true;
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+
+    if (!trimmed) continue;
+
+    // Divider: --- or *** or ___ (horizontal rule)
+    if (/^[-*_ \t]{3,}$/.test(trimmed)) {
+      htmlParts.push('<hr class="ai-msg-divider">');
+      continue;
+    }
+
+    // Strip italic parentheses markers like *(text)* or (*text*)
+    trimmed = trimmed.replace(/^\*\((.*?)\)\*$/, '$1');
+    trimmed = trimmed.replace(/^\((.*?)\)$/, '$1');
+
+    // Headings: #, ##, ###, ####
+    if (/^#{1,6}\s+/.test(trimmed)) {
+      const headingLevel = (trimmed.match(/^(#{1,6})\s+/) || ['', '##'])[1].length;
+      let headingText = trimmed.replace(/^#{1,6}\s+/, '').trim();
+      const tag = headingLevel <= 2 ? 'h4' : 'h5';
+      const cls = headingLevel <= 2 ? 'ai-msg-heading' : 'ai-msg-subheading';
+      htmlParts.push(`<${tag} class="${cls}">${escapeHtml(headingText)}</${tag}>`);
+      continue;
+    }
+
+    // Bullet points: - item, * item, • item
+    if (/^[-*•]\s+/.test(trimmed)) {
+      const bulletText = escapeHtml(trimmed.replace(/^[-*•]\s+/, ''));
+      htmlParts.push(`<div class="ai-msg-bullet"><span class="ai-msg-bullet-dot">•</span><span>${bulletText}</span></div>`);
+      continue;
+    }
+
+    // Numbered lists: 1. item, 2. item
+    const numMatch = trimmed.match(/^(\d+\.)\s+(.*)$/);
+    if (numMatch) {
+      const numLabel = escapeHtml(numMatch[1]);
+      const itemText = escapeHtml(numMatch[2]);
+      htmlParts.push(`<div class="ai-msg-bullet"><span class="ai-msg-bullet-dot">${numLabel}</span><span>${itemText}</span></div>`);
+      continue;
+    }
+
+    // Standard paragraph line
+    htmlParts.push(`<p class="ai-msg-p">${escapeHtml(trimmed)}</p>`);
+  }
+
+  if (inTable) {
+    flushTable();
+  }
+
+  let finalHtml = htmlParts.join('');
+
+  // Bold formatting: **text** -> <strong>text</strong>
+  finalHtml = finalHtml.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Italic formatting: *text* -> <em>text</em>
+  finalHtml = finalHtml.replace(/\*([^\*<>\n]+)\*/g, '<em>$1</em>');
+
+  return finalHtml;
+}
+
 function appendChatBubble(role, content, citation = null) {
   const container = document.getElementById('ai-drawer-messages');
   if (!container) return null;
@@ -1915,12 +2028,14 @@ function appendChatBubble(role, content, citation = null) {
   if (role === 'user') {
     bubble.textContent = content;
   } else {
-    bubble.innerHTML = `<p>${content}</p>`;
+    // Format assistant messages cleanly, stripping useless special characters
+    const formattedHtml = formatAiMessage(content);
+    bubble.innerHTML = formattedHtml || `<p class="ai-msg-p">${escapeHtml(content)}</p>`;
     if (citation) {
       const pageInfo = citation.pageNumber ? `(Page ${citation.pageNumber})` : '';
       bubble.innerHTML += `
         <div class="ai-citation-card">
-          <strong>Verified Source:</strong> ${escapeHtml(citation.sectionTitle || 'Textbook Excerpt')} ${pageInfo}
+          <strong>Verified Source:</strong> ${escapeHtml(citation.sectionTitle || 'Curriculum Section')} ${pageInfo} • <em>${escapeHtml(citation.documentName || 'Study Material')}</em>
         </div>
       `;
     }
