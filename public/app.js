@@ -1967,10 +1967,27 @@ function setupAuthForms() {
   const signupForm = document.getElementById('signup-form');
   const tabSignin = document.getElementById('tab-signin-btn');
   const tabSignup = document.getElementById('tab-signup-btn');
-  const evalLoginBtn = document.getElementById('evaluator-login-btn');
+  const errorBox = document.getElementById('auth-error-box');
+
+  const showAuthError = (msg) => {
+    if (errorBox) {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    } else {
+      alert(msg);
+    }
+  };
+
+  const clearAuthError = () => {
+    if (errorBox) {
+      errorBox.textContent = '';
+      errorBox.style.display = 'none';
+    }
+  };
 
   if (tabSignin) {
     tabSignin.addEventListener('click', () => {
+      clearAuthError();
       tabSignin.classList.add('active');
       tabSignup?.classList.remove('active');
       if (signinForm) signinForm.style.display = 'block';
@@ -1980,6 +1997,7 @@ function setupAuthForms() {
 
   if (tabSignup) {
     tabSignup.addEventListener('click', () => {
+      clearAuthError();
       tabSignup.classList.add('active');
       tabSignin?.classList.remove('active');
       if (signupForm) signupForm.style.display = 'block';
@@ -1990,6 +2008,7 @@ function setupAuthForms() {
   if (signinForm) {
     signinForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      clearAuthError();
       const email = document.getElementById('signin-email').value.trim();
       const password = document.getElementById('signin-password').value;
       const btn = document.getElementById('signin-submit-btn');
@@ -1997,9 +2016,11 @@ function setupAuthForms() {
       if (btn) btn.disabled = true;
       try {
         const { error } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) alert(`Sign in failed: ${error.message}`);
+        if (error) {
+          showAuthError(`Sign in failed: ${error.message}`);
+        }
       } catch (err) {
-        alert(`Sign in error: ${err.message}`);
+        showAuthError(`Sign in error: ${err.message}`);
       } finally {
         if (btn) btn.disabled = false;
       }
@@ -2009,6 +2030,7 @@ function setupAuthForms() {
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      clearAuthError();
       const name = document.getElementById('signup-name').value.trim();
       const email = document.getElementById('signup-email').value.trim();
       const password = document.getElementById('signup-password').value;
@@ -2021,29 +2043,15 @@ function setupAuthForms() {
           password,
           options: { data: { full_name: name } }
         });
-        if (error) alert(`Sign up failed: ${error.message}`);
-        else alert('Account registered! You are now signed in.');
+        if (error) {
+          showAuthError(`Sign up failed: ${error.message}`);
+        } else {
+          navigateTo('dashboard');
+        }
       } catch (err) {
-        alert(`Sign up error: ${err.message}`);
+        showAuthError(`Sign up error: ${err.message}`);
       } finally {
         if (btn) btn.disabled = false;
-      }
-    });
-  }
-
-  if (evalLoginBtn) {
-    evalLoginBtn.addEventListener('click', async () => {
-      evalLoginBtn.disabled = true;
-      try {
-        const { error } = await AppState.supabaseClient.auth.signInWithPassword({
-          email: 'evaluator.demo@gapfinder.ai',
-          password: 'EvaluatorPassword2026!'
-        });
-        if (error) alert(`Evaluator login failed: ${error.message}`);
-      } catch (err) {
-        alert(`Login error: ${err.message}`);
-      } finally {
-        evalLoginBtn.disabled = false;
       }
     });
   }

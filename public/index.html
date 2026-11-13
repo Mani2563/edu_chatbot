@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GapFinder AI — Modern Student Learning Workspace</title>
-  <link rel="stylesheet" href="/style.css?v=4">
+  <link rel="stylesheet" href="/style.css?v=5">
   <!-- Supabase Official JavaScript Client for Browser Auth & Direct Storage Uploads -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -93,66 +93,67 @@
 
         <!-- VIEW 1: AUTHENTICATION / LOGIN -->
         <section id="view-login" class="view-panel" style="display: none;">
-          <div class="auth-card">
-            <div id="auth-signedin-state" style="display: none; text-align: center;">
-              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
-              <h2>Welcome Back!</h2>
-              <p class="text-muted mb-3" id="signedin-user-text">You are signed in.</p>
-              <div class="btn-group" style="justify-content: center; flex-direction: column; gap: 0.75rem;">
-                <button type="button" class="btn btn-primary" onclick="navigateTo('dashboard')">📊 Go to Dashboard</button>
-                <button type="button" class="btn btn-secondary" onclick="openUploadModal()">📁 Upload Material</button>
-                <button type="button" class="btn btn-outline" onclick="signOut()" style="color: #ef4444; border-color: #fca5a5;">Sign Out</button>
-              </div>
-            </div>
-
-            <div id="auth-forms-container">
-              <div class="auth-header">
-                <h2>Student Portal Sign In</h2>
-                <p class="text-muted" style="font-size: 0.85rem;">Sign in to access your uploaded study materials, diagnostic gap maps, and AI learning assistant.</p>
+          <div class="auth-wrapper">
+            <div class="auth-card">
+              <div id="auth-signedin-state" style="display: none; text-align: center;">
+                <div class="auth-badge-icon">🎉</div>
+                <h2 class="auth-title">Welcome Back!</h2>
+                <p class="auth-subtitle" id="signedin-user-text">You are signed in to GapFinder AI.</p>
+                <div class="auth-btn-stack">
+                  <button type="button" class="btn btn-primary" onclick="navigateTo('dashboard')">📊 Go to Dashboard</button>
+                  <button type="button" class="btn btn-secondary" onclick="openUploadModal()">📁 Upload Material</button>
+                  <button type="button" class="btn btn-outline" onclick="signOut()" style="color: #ef4444; border-color: #fca5a5;">Sign Out</button>
+                </div>
               </div>
 
-              <div class="auth-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
-                <button class="btn btn-secondary btn-sm active flex-1" id="tab-signin-btn" type="button">Sign In</button>
-                <button class="btn btn-secondary btn-sm flex-1" id="tab-signup-btn" type="button">Create Account</button>
-              </div>
+              <div id="auth-forms-container">
+                <div class="auth-badge-icon">🎯</div>
+                <div class="auth-header">
+                  <h2 class="auth-title">Student Portal Sign In</h2>
+                  <p class="auth-subtitle">Sign in to access your study materials, diagnostic gap maps, and AI learning assistant.</p>
+                </div>
 
-              <!-- Sign In Form -->
-              <form id="signin-form">
-                <div class="form-group">
-                  <label for="signin-email">Email Address</label>
-                  <input type="email" id="signin-email" class="form-control" placeholder="student@example.com" required>
+                <div class="auth-tabs">
+                  <button class="auth-tab-btn active" id="tab-signin-btn" type="button">Sign In</button>
+                  <button class="auth-tab-btn" id="tab-signup-btn" type="button">Create Account</button>
                 </div>
-                <div class="form-group">
-                  <label for="signin-password">Password</label>
-                  <input type="password" id="signin-password" class="form-control" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block" id="signin-submit-btn">Sign In</button>
-              </form>
 
-              <!-- Sign Up Form (hidden by default) -->
-              <form id="signup-form" style="display: none;">
-                <div class="form-group">
-                  <label for="signup-name">Full Name</label>
-                  <input type="text" id="signup-name" class="form-control" placeholder="Student Name" required>
-                </div>
-                <div class="form-group">
-                  <label for="signup-email">Email Address</label>
-                  <input type="email" id="signup-email" class="form-control" placeholder="student@example.com" required>
-                </div>
-                <div class="form-group">
-                  <label for="signup-password">Password (min. 6 characters)</label>
-                  <input type="password" id="signup-password" class="form-control" placeholder="••••••••" minlength="6" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block" id="signup-submit-btn">Create Account</button>
-              </form>
+                <!-- Error Alert Box -->
+                <div id="auth-error-box" class="auth-error-box"></div>
 
-              <div class="auth-divider"><span>OR QUICK EVALUATOR LOGIN</span></div>
+                <!-- Sign In Form -->
+                <form id="signin-form">
+                  <div class="form-group">
+                    <label for="signin-email">Email Address</label>
+                    <input type="email" id="signin-email" class="form-control" placeholder="student@example.com" required autocomplete="email">
+                  </div>
+                  <div class="form-group">
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                  </div>
+                  <button type="submit" class="btn-auth-submit" id="signin-submit-btn">
+                    <span>Sign In</span>
+                  </button>
+                </form>
 
-              <div class="demo-login-box">
-                <p><strong>Testing this workspace?</strong> Sign in with evaluator credentials:</p>
-                <button type="button" class="btn btn-outline btn-block" id="evaluator-login-btn">
-                  🚀 1-Click Evaluator Sign-In
-                </button>
+                <!-- Sign Up Form (hidden by default) -->
+                <form id="signup-form" style="display: none;">
+                  <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" class="form-control" placeholder="Student Name" required autocomplete="name">
+                  </div>
+                  <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" class="form-control" placeholder="student@example.com" required autocomplete="email">
+                  </div>
+                  <div class="form-group">
+                    <label for="signup-password">Password (min. 6 characters)</label>
+                    <input type="password" id="signup-password" class="form-control" placeholder="••••••••" minlength="6" required autocomplete="new-password">
+                  </div>
+                  <button type="submit" class="btn-auth-submit" id="signup-submit-btn">
+                    <span>Create Account</span>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -626,6 +627,6 @@
   </div>
 
   <!-- App Controller Script -->
-  <script src="/app.js?v=4"></script>
+  <script src="/app.js?v=5"></script>
 </body>
 </html>
