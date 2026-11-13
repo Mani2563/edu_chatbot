@@ -129,7 +129,10 @@
                     <input type="email" id="signin-email" class="form-control" placeholder="student@example.com" required autocomplete="email">
                   </div>
                   <div class="form-group">
-                    <label for="signin-password">Password</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                      <label for="signin-password" style="margin-bottom: 0;">Password</label>
+                      <a href="#" id="link-forgot-password" style="font-size: 0.78rem; color: var(--primary); text-decoration: none; font-weight: 500;">Forgot password?</a>
+                    </div>
                     <input type="password" id="signin-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
                   </div>
                   <button type="submit" class="btn-auth-submit" id="signin-submit-btn">

@@ -2640,6 +2640,40 @@ function setupAuthForms() {
     });
   }
 
+  const sendPasswordResetEmail = async (targetEmail) => {
+    const email = targetEmail || document.getElementById('signin-email')?.value?.trim();
+    if (!email || !isValidEmail(email)) {
+      showAuthError('Please enter a valid email address to receive a password reset link.');
+      document.getElementById('signin-email')?.focus();
+      return;
+    }
+    showAuthError('Sending password reset instructions to your email...', true);
+    try {
+      const { error } = await AppState.supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin
+      });
+      if (error) {
+        showAuthError(`Could not send reset link: ${error.message}`);
+      } else {
+        showAuthError(
+          `✅ A password reset email has been sent to <strong>${escapeHtml(email)}</strong>.<br>Please check your inbox (and spam folder) to set a new password.`,
+          true
+        );
+      }
+    } catch (err) {
+      showAuthError(`Reset request failed: ${err.message}`);
+    }
+  };
+
+  const linkForgot = document.getElementById('link-forgot-password');
+  if (linkForgot) {
+    linkForgot.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const currentEmail = document.getElementById('signin-email')?.value?.trim();
+      sendPasswordResetEmail(currentEmail);
+    });
+  }
+
   // Sign In Handler
   if (signinForm) {
     signinForm.addEventListener('submit', async (e) => {
@@ -2674,20 +2708,22 @@ function setupAuthForms() {
       try {
         const { data, error } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
-          // Standard secure auth message preventing email enumeration
           showAuthError(
-            `Invalid email or password. Please verify your credentials or create an account.<br><a href="#" class="auth-switch-link" id="auth-goto-signup">👉 Need an account? Create one here</a>`,
+            `<strong>Invalid email or password.</strong><br>
+             Please check your password. If you forgot it, click below to reset it.<br>
+             <div style="display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap;">
+               <button type="button" class="btn btn-outline btn-sm" id="auth-reset-btn" style="padding: 0.25rem 0.6rem; font-size: 0.78rem;">🔑 Reset Password</button>
+               <button type="button" class="btn btn-secondary btn-sm" id="auth-goto-signup" style="padding: 0.25rem 0.6rem; font-size: 0.78rem;">👉 Create New Account</button>
+             </div>`,
             true
           );
-          const gotoSignup = document.getElementById('auth-goto-signup');
-          if (gotoSignup) {
-            gotoSignup.addEventListener('click', (ev) => {
-              ev.preventDefault();
-              switchToTab('signup');
-              const signupEmail = document.getElementById('signup-email');
-              if (signupEmail) signupEmail.value = email;
-            });
-          }
+          document.getElementById('auth-reset-btn')?.addEventListener('click', () => sendPasswordResetEmail(email));
+          document.getElementById('auth-goto-signup')?.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            switchToTab('signup');
+            const signupEmail = document.getElementById('signup-email');
+            if (signupEmail) signupEmail.value = email;
+          });
           passwordInput?.focus();
         } else if (data?.session) {
           handleSessionChange(data.session);
@@ -2767,32 +2803,23 @@ function setupAuthForms() {
         if (error) {
           const lowerErr = (error.message || '').toLowerCase();
           if (lowerErr.includes('already registered') || lowerErr.includes('already exists') || lowerErr.includes('user already in database')) {
-            // Attempt auto-login if they typed the correct existing password
-            const { data: signInData, error: signInErr } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
-            if (!signInErr && signInData?.session) {
-              handleSessionChange(signInData.session);
-              showToast('Welcome back! Signed in to your account.', 'success');
-              navigateTo('dashboard');
-              return;
-            }
             showAuthError(
-              `An account already exists with this email address. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
+              `<strong>Account already exists!</strong><br>
+               An account is already registered for <strong>${escapeHtml(email)}</strong>.<br>
+               Please sign in with your password, or reset it if you don't remember it.<br>
+               <div style="display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap;">
+                 <button type="button" class="btn btn-primary btn-sm" id="auth-goto-signin-btn" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">👉 Sign In to Account</button>
+                 <button type="button" class="btn btn-outline btn-sm" id="auth-reset-btn-signup" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">🔑 Reset Password</button>
+               </div>`,
               true
             );
-            const gotoSignin = document.getElementById('auth-goto-signin');
-            if (gotoSignin) {
-              gotoSignin.addEventListener('click', (ev) => {
-                ev.preventDefault();
-                switchToTab('signin');
-                const signinEmail = document.getElementById('signin-email');
-                if (signinEmail) signinEmail.value = email;
-                document.getElementById('signin-password')?.focus();
-              });
-            }
-            switchToTab('signin');
-            const signinEmail = document.getElementById('signin-email');
-            if (signinEmail) signinEmail.value = email;
-            document.getElementById('signin-password')?.focus();
+            document.getElementById('auth-goto-signin-btn')?.addEventListener('click', () => {
+              switchToTab('signin');
+              const signinEmail = document.getElementById('signin-email');
+              if (signinEmail) signinEmail.value = email;
+              document.getElementById('signin-password')?.focus();
+            });
+            document.getElementById('auth-reset-btn-signup')?.addEventListener('click', () => sendPasswordResetEmail(email));
           } else {
             showAuthError(`Sign up failed: ${error.message}`);
           }
@@ -2811,34 +2838,23 @@ function setupAuthForms() {
         const isExistingUser = data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0;
 
         if (isExistingUser) {
-          // Attempt auto-signin with the entered password:
-          const { data: signInData, error: signInErr } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
-          if (!signInErr && signInData?.session) {
-            handleSessionChange(signInData.session);
-            showToast('Welcome back! Signed in to your account.', 'success');
-            navigateTo('dashboard');
-            return;
-          }
-
-          // If password doesn't match:
           showAuthError(
-            `An account already exists with this email address. Please enter your existing password to sign in.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
+            `<strong>Account already exists!</strong><br>
+             An account is already registered for <strong>${escapeHtml(email)}</strong>.<br>
+             Please sign in with your password, or reset it if you don't remember it.<br>
+             <div style="display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap;">
+               <button type="button" class="btn btn-primary btn-sm" id="auth-goto-signin-btn" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">👉 Sign In to Account</button>
+               <button type="button" class="btn btn-outline btn-sm" id="auth-reset-btn-signup" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">🔑 Reset Password</button>
+             </div>`,
             true
           );
-          const gotoSignin = document.getElementById('auth-goto-signin');
-          if (gotoSignin) {
-            gotoSignin.addEventListener('click', (ev) => {
-              ev.preventDefault();
-              switchToTab('signin');
-              const signinEmail = document.getElementById('signin-email');
-              if (signinEmail) signinEmail.value = email;
-              document.getElementById('signin-password')?.focus();
-            });
-          }
-          switchToTab('signin');
-          const signinEmail = document.getElementById('signin-email');
-          if (signinEmail) signinEmail.value = email;
-          document.getElementById('signin-password')?.focus();
+          document.getElementById('auth-goto-signin-btn')?.addEventListener('click', () => {
+            switchToTab('signin');
+            const signinEmail = document.getElementById('signin-email');
+            if (signinEmail) signinEmail.value = email;
+            document.getElementById('signin-password')?.focus();
+          });
+          document.getElementById('auth-reset-btn-signup')?.addEventListener('click', () => sendPasswordResetEmail(email));
           return;
         }
 
