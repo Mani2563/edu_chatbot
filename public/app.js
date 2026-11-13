@@ -2469,23 +2469,6 @@ function setupAuthForms() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const checkEmailExists = async (email) => {
-    try {
-      const res = await fetch('/api/auth/check-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json();
-      if (data && data.success) {
-        return data.exists;
-      }
-    } catch (err) {
-      console.warn('Check email lookup error:', err);
-    }
-    return null;
-  };
-
   // Real-time password criteria validation
   const evaluatePasswordChecklist = (val) => {
     const hasUpper = /[A-Z]/.test(val);
@@ -2617,28 +2600,21 @@ function setupAuthForms() {
       try {
         const { data, error } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
-          // Check if user exists to provide exact customized feedback requested by user
-          const exists = await checkEmailExists(email);
-          if (exists === false) {
-            showAuthError(
-              `No account found with this email ID. Please sign up to create an account.<br><a href="#" class="auth-switch-link" id="auth-goto-signup">👉 Switch to Create Account</a>`,
-              true
-            );
-            const gotoSignup = document.getElementById('auth-goto-signup');
-            if (gotoSignup) {
-              gotoSignup.addEventListener('click', (ev) => {
-                ev.preventDefault();
-                switchToTab('signup');
-                const signupEmail = document.getElementById('signup-email');
-                if (signupEmail) signupEmail.value = email;
-              });
-            }
-          } else if (exists === true) {
-            showAuthError('Your password is not correct. Please check your password and try again.');
-            passwordInput?.focus();
-          } else {
-            showAuthError(`Sign in failed: ${error.message}`);
+          // Standard secure auth message preventing email enumeration
+          showAuthError(
+            `Invalid email or password. Please verify your credentials or create an account.<br><a href="#" class="auth-switch-link" id="auth-goto-signup">👉 Need an account? Create one here</a>`,
+            true
+          );
+          const gotoSignup = document.getElementById('auth-goto-signup');
+          if (gotoSignup) {
+            gotoSignup.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              switchToTab('signup');
+              const signupEmail = document.getElementById('signup-email');
+              if (signupEmail) signupEmail.value = email;
+            });
           }
+          passwordInput?.focus();
         }
       } catch (err) {
         showAuthError(`Sign in error: ${err.message}`);
@@ -2704,26 +2680,6 @@ function setupAuthForms() {
       if (btn) btn.disabled = true;
 
       try {
-        // First verify whether account already exists with this email
-        const exists = await checkEmailExists(email);
-        if (exists === true) {
-          showAuthError(
-            `An account already exists with this email ID. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
-            true
-          );
-          const gotoSignin = document.getElementById('auth-goto-signin');
-          if (gotoSignin) {
-            gotoSignin.addEventListener('click', (ev) => {
-              ev.preventDefault();
-              switchToTab('signin');
-              const signinEmail = document.getElementById('signin-email');
-              if (signinEmail) signinEmail.value = email;
-            });
-          }
-          if (btn) btn.disabled = false;
-          return;
-        }
-
         const { data, error } = await AppState.supabaseClient.auth.signUp({
           email,
           password,
@@ -2731,9 +2687,10 @@ function setupAuthForms() {
         });
 
         if (error) {
-          if (error.message.toLowerCase().includes('already registered') || error.message.toLowerCase().includes('user already exists')) {
+          const lowerErr = error.message.toLowerCase();
+          if (lowerErr.includes('already registered') || lowerErr.includes('already exists') || lowerErr.includes('user already in database')) {
             showAuthError(
-              `An account already exists with this email ID. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
+              `An account already exists with this email address. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
               true
             );
             const gotoSignin = document.getElementById('auth-goto-signin');
@@ -2755,35 +2712,6 @@ function setupAuthForms() {
         showAuthError(`Sign up error: ${err.message}`);
       } finally {
         if (btn) btn.disabled = false;
-      }
-    });
-  }
-  // Quick Sign In Handler
-  const quickSigninBtn = document.getElementById('btn-quick-signin');
-  if (quickSigninBtn) {
-    quickSigninBtn.addEventListener('click', async () => {
-      clearAuthError();
-      const emailInput = document.getElementById('signin-email');
-      const passwordInput = document.getElementById('signin-password');
-      if (emailInput) emailInput.value = 'manikantaanandam2563@gmail.com';
-      if (passwordInput) passwordInput.value = 'Password@123';
-      quickSigninBtn.disabled = true;
-      quickSigninBtn.textContent = 'Signing in...';
-      try {
-        const { error } = await AppState.supabaseClient.auth.signInWithPassword({
-          email: 'manikantaanandam2563@gmail.com',
-          password: 'Password@123'
-        });
-        if (error) {
-          showAuthError(`Sign in failed: ${error.message}`);
-        } else {
-          showToast('Signed in successfully as Manikanta Anandam!', 'success');
-        }
-      } catch (err) {
-        showAuthError(`Sign in error: ${err.message}`);
-      } finally {
-        quickSigninBtn.disabled = false;
-        quickSigninBtn.textContent = '⚡ Quick Sign In as Manikanta';
       }
     });
   }

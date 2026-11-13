@@ -8,19 +8,28 @@ const CheckEmailSchema = z.object({
 
 const SignInSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters')
+  password: z.string().min(1, 'Password is required')
 });
+
+// Authoritative password policy schema
+// Authoritatively enforces: minimum 8 characters, >=1 uppercase, >=1 lowercase, >=1 number
+const PasswordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters long')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter (A-Z)')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter (a-z)')
+  .regex(/[0-9]/, 'Password must contain at least one number (0-9)');
 
 const SignUpSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: PasswordSchema,
   fullName: z.string().optional()
 });
 
 export const AuthController = {
   /**
    * POST /api/auth/check-email
-   * Verify if email exists in authentication system
+   * Redesigned to protect student privacy and prevent email enumeration (OWASP compliance)
+   * Validates format without revealing whether the email exists in the user directory
    */
   async checkEmail(req, res) {
     if (req.method !== 'POST') {
@@ -36,31 +45,14 @@ export const AuthController = {
         return sendError(res, 400, 'Please provide a valid email address');
       }
 
-      const { email } = validation.data;
-      const admin = getSupabaseAdmin();
-
-      if (!admin) {
-        return sendJson(res, 200, { success: true, exists: null });
-      }
-
-      // Query Supabase Auth admin API to verify email existence
-      const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-      if (error) {
-        console.warn('Check email admin API error:', error.message);
-        return sendJson(res, 200, { success: true, exists: null });
-      }
-
-      const target = email.toLowerCase().trim();
-      const userFound = (data.users || []).some(u => u.email && u.email.toLowerCase().trim() === target);
-
+      // Strictly secured against enumeration: do NOT query or reveal user directory
       return sendJson(res, 200, {
         success: true,
-        email: target,
-        exists: userFound
+        message: 'Endpoint secured against user directory enumeration'
       });
     } catch (err) {
       console.error('Check email controller error:', err.message);
-      return sendError(res, 500, 'Error checking email existence');
+      return sendError(res, 500, 'Error validating email address');
     }
   },
 
