@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { QuizModel } from '../models/quiz-model.js';
 import { DocumentChunkModel } from '../models/document-chunk-model.js';
 import { BM25Engine, tokenize } from '../lib/retriever.js';
-import { getGroqModel, isGroqConfigured } from '../lib/groq.js';
+import { getGroqModel, getFallbackGroqModels, isGroqConfigured } from '../lib/groq.js';
 import { getUserSupabaseClient, getSupabaseAdmin } from '../lib/supabase.js';
 import { generateText } from 'ai';
 
@@ -219,6 +219,36 @@ export const QuizService = {
         deduplicator.add(validated.questionText);
         verifiedQuestions.push(validated);
         if (verifiedQuestions.length >= count) break;
+      }
+    }
+
+    // Top-up with deterministic synthesizer if verified questions are fewer than requested count
+    if (verifiedQuestions.length < count) {
+      const needed = count - verifiedQuestions.length;
+      const fallbackQuestions = this._generateDeterministicGrounded({
+        chunks: relevantChunks,
+        targetTopic,
+        targetChapter,
+        difficulty: normalizedDifficulty,
+        count: needed + 8,
+        excludeTexts: verifiedQuestions.map(q => q.questionText)
+      });
+
+      for (const fallbackQ of fallbackQuestions) {
+        const validated = this._validateAndVerifyQuestion(fallbackQ, {
+          documentId,
+          userId: user.id,
+          chunkMap,
+          deduplicator,
+          targetTopic,
+          targetChapter,
+          difficulty: normalizedDifficulty
+        });
+        if (validated && validated.citationVerified) {
+          deduplicator.add(validated.questionText);
+          verifiedQuestions.push(validated);
+          if (verifiedQuestions.length >= count) break;
+        }
       }
     }
 
@@ -524,32 +554,70 @@ export const QuizService = {
   },
 
   /**
-   * Calls Groq to generate grounded multiple-choice questions
+   * Returns explicit Bloom's Taxonomy rubrics for the selected difficulty level
+   */
+  _getDifficultyRubric(difficulty) {
+    switch ((difficulty || 'medium').toLowerCase()) {
+      case 'easy':
+        return `TARGET DIFFICULTY: EASY (Foundational Concepts & Direct Recall)
+- Focus: Direct definitions, basic facts, primary terminology, and explicit statements directly stated in the excerpts.
+- Cognitive level: Remember & Recall.
+- Question style: Direct questions like "What is...", "Which term defines...", "What percentage of...".
+- Distractors: Simple, distinct, and clearly incorrect options that test basic knowledge vs. confusion.`;
+      case 'hard':
+        return `TARGET DIFFICULTY: HARD (Advanced Problem Solving & Critical Evaluation)
+- Focus: Complex multi-step reasoning, constraints, evaluating competing factors, synthesizing multiple sentences, and analyzing consequences.
+- Cognitive level: Analyze & Evaluate.
+- Question style: Higher-order questions like "Under which specific condition does...", "What critical constraint applies when...", "Which consequence logically follows if...".
+- Distractors: Highly plausible, sophisticated distractors that test deep understanding.`;
+      case 'medium':
+      default:
+        return `TARGET DIFFICULTY: MEDIUM (Standard Application & Conceptual Understanding)
+- Focus: Understanding how concepts work, cause-and-effect relationships, comparing ideas, and practical applications.
+- Cognitive level: Understand & Apply.
+- Question style: Application questions like "Why does...", "How does process X function...", "Which scenario best illustrates...".
+- Distractors: Plausible options reflecting common student misconceptions.`;
+    }
+  },
+
+  /**
+   * Calls Groq to generate grounded multiple-choice questions with exact count enforcement and model rotation
    */
   async _generateWithGroq({ chunks, targetTopic, targetChapter, difficulty, count }) {
-    const groqModel = getGroqModel();
-    if (!groqModel) throw new Error('Groq model not configured');
+    const models = getFallbackGroqModels();
+    if (!models || models.length === 0) throw new Error('Groq model not configured');
 
+    const rubric = this._getDifficultyRubric(difficulty);
     const topicContext = targetTopic ? `Topic: "${targetTopic.name}"` : `Chapter: "${targetChapter?.name || 'General'}"`;
     const excerpts = chunks.map(c => 
       `--- [CHUNK_ID: ${c.id}] [PAGE: ${c.page_number || 'N/A'}] [SECTION: ${c.section_title || 'N/A'}] ---\n${c.content.slice(0, 800)}`
     ).join('\n\n');
 
-    const systemPrompt = `You are a rigorous academic diagnostic assessment engine.
+    // To prevent JSON truncation on large question counts (e.g. 10 questions),
+    // batch generation into manageable chunks of at most 5 questions per LLM call
+    const batchSize = count > 5 ? Math.ceil(count / 2) : count;
+    const allQuestions = [];
+
+    const callModelBatch = async (batchCount, batchOffset) => {
+      const systemPrompt = `You are a rigorous academic diagnostic assessment engine.
 Generate strictly grounded multiple-choice questions based ONLY on the provided textbook excerpts.
-Rules:
-1. Every question must be fully answerable from the text.
-2. Target difficulty: "${difficulty}".
-3. Provide EXACTLY 4 distinct, mutually exclusive options (A, B, C, D).
-4. Exactly one option must be mathematically and textually correct.
-5. All 4 options must be plausible, unambiguous, and distinct.
-6. Provide a grounded explanation from the textbook.
+
+${rubric}
+
+CRITICAL RULES:
+1. You MUST generate EXACTLY ${batchCount} questions in the "questions" array.
+2. Every question must strictly adhere to the ${difficulty.toUpperCase()} difficulty guidelines above.
+3. Every question must be fully answerable from the text.
+4. Provide EXACTLY 4 distinct, mutually exclusive options (A, B, C, D).
+5. Exactly one option must be mathematically and textually correct.
+6. Provide a concise grounded explanation referencing the excerpt.
 7. Attribute each question to its exact CHUNK_ID and PAGE.
 8. Return PURE JSON conforming strictly to the requested schema.`;
 
-    const userPrompt = `Context:
+      const userPrompt = `Context:
 ${topicContext}
-Target Difficulty: ${difficulty}
+Target Difficulty: ${difficulty.toUpperCase()}
+Number of Questions Required: ${batchCount}
 
 Textbook Excerpts:
 ${excerpts}
@@ -567,64 +635,172 @@ Required JSON Output Format:
       ],
       "correctOption": "A",
       "explanation": "Textbook-grounded explanation here",
-      "sourceChunkId": "exact-chunk-uuid-from-excerpt",
-      "sourcePageNumber": 16
+      "sourceChunkId": "${chunks[0]?.id || ''}",
+      "sourcePageNumber": ${chunks[0]?.page_number || 1}
     }
   ]
 }`;
 
-    const { text } = await generateText({
-      model: groqModel,
-      system: systemPrompt,
-      prompt: userPrompt,
-      temperature: 0.2
-    });
+      let lastErr = null;
+      for (const m of models) {
+        try {
+          const { text } = await generateText({
+            model: m.model,
+            system: systemPrompt,
+            prompt: userPrompt,
+            temperature: 0.3,
+            maxTokens: 1200,
+            maxRetries: 1
+          });
+          const parsed = this._parseJsonSafely(text);
+          if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+            return parsed.questions;
+          }
+        } catch (mErr) {
+          console.warn(`Groq model ${m.name} failed:`, mErr.message);
+          lastErr = mErr;
+        }
+      }
+      throw lastErr || new Error('All Groq models failed to generate questions');
+    };
 
-    const parsed = this._parseJsonSafely(text);
-    if (!parsed || !Array.isArray(parsed.questions)) {
-      throw new Error('Groq response did not contain a valid questions array');
+    // First batch
+    const batch1 = await callModelBatch(batchSize, 0);
+    allQuestions.push(...batch1);
+
+    // Second batch if needed (e.g. 10 questions)
+    if (count > 5 && allQuestions.length < count) {
+      const remainingNeeded = count - allQuestions.length;
+      try {
+        const batch2 = await callModelBatch(remainingNeeded, batchSize);
+        allQuestions.push(...batch2);
+      } catch (b2Err) {
+        console.warn('Batch 2 generation failed, will top up with deterministic generator:', b2Err.message);
+      }
     }
 
-    return parsed.questions;
+    return allQuestions;
   },
 
   /**
    * Deterministic grounded question generator from textbook chunks
+   * Generates multiple distinct questions tailored to Easy, Medium, and Hard cognitive levels
    */
-  _generateDeterministicGrounded({ chunks, targetTopic, targetChapter, difficulty, count }) {
+  _generateDeterministicGrounded({ chunks, targetTopic, targetChapter, difficulty, count, excludeTexts = [] }) {
     const questions = [];
-    const topicTitle = targetTopic ? targetTopic.name : (targetChapter ? targetChapter.name : 'Mathematics');
+    const topicTitle = targetTopic ? targetTopic.name : (targetChapter ? targetChapter.name : 'Curriculum Section');
+    const normDiff = (difficulty || 'medium').toLowerCase();
 
-    for (let i = 0; i < chunks.length && questions.length < count; i++) {
-      const chunk = chunks[i];
-      const text = chunk.content || '';
-      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 20);
+    // Extract all meaningful sentences across chunks
+    const candidates = [];
+    for (const chunk of chunks) {
+      const content = chunk.content || '';
+      const sentences = content
+        .split(/(?<=[.?!])\s+|\n+/)
+        .map(s => s.trim().replace(/\s+/g, ' '))
+        .filter(s => s.length >= 25 && s.length <= 250);
 
-      const candidateLine = lines.find(l => 
-        l.includes('is defined as') || 
-        l.includes('theorem') || 
-        l.includes('formula') || 
-        l.includes('called') ||
-        l.includes('if and only if') ||
-        l.includes('equals') ||
-        l.length > 40
-      ) || lines[0];
+      for (const sent of sentences) {
+        candidates.push({ sentence: sent, chunk });
+      }
+    }
 
-      if (candidateLine) {
-        const cleanStatement = candidateLine.replace(/[^\w\s.,;:()=+-]/g, '').trim();
-        const words = cleanStatement.split(' ');
-        const keyTerm = words.find(w => w.length > 5) || 'statement';
+    if (candidates.length === 0 && chunks.length > 0) {
+      candidates.push({
+        sentence: (chunks[0].content || 'Textbook foundational material').slice(0, 150),
+        chunk: chunks[0]
+      });
+    }
 
+    let candIdx = 0;
+    let attempt = 0;
+    const maxAttempts = count * 6;
+
+    while (questions.length < count && attempt < maxAttempts) {
+      attempt++;
+      const cand = candidates[candIdx % candidates.length];
+      const angle = Math.floor(candIdx / candidates.length) % 4;
+      candIdx++;
+
+      const { sentence, chunk } = cand;
+      const cleanStatement = sentence.replace(/[^\w\s.,;:()=+-/%]/g, '').trim();
+      const words = cleanStatement.split(' ').filter(w => w.length > 4);
+      const keyTerm = words[0] || 'concept';
+      const secondaryTerm = words[1] || 'principle';
+
+      let qText = '';
+      let optA = '';
+      let optB = '';
+      let optC = '';
+      let optD = '';
+      let explanation = '';
+
+      if (normDiff === 'easy') {
+        // Foundational Recall across 4 distinct angles
+        if (angle === 0) {
+          qText = `What is the foundational definition or rule regarding "${keyTerm}" stated in the textbook on ${topicTitle}?`;
+        } else if (angle === 1) {
+          qText = `Which of the following directly identifies the property of "${keyTerm}" according to the textbook excerpt?`;
+        } else if (angle === 2) {
+          qText = `According to ${topicTitle}, what factual assertion is made concerning "${secondaryTerm}"?`;
+        } else {
+          qText = `In the study material on ${topicTitle}, which statement is explicitly verified regarding "${keyTerm}"?`;
+        }
+        optA = cleanStatement;
+        optB = `It is an obsolete concept explicitly superseded in modern ${topicTitle}`;
+        optC = `It applies only when ${keyTerm} has no connection to ${secondaryTerm}`;
+        optD = `It represents an invalid non-academic assumption`;
+        explanation = `Directly stated in the textbook on page ${chunk.page_number || 'N/A'}: "${cleanStatement}"`;
+      } else if (normDiff === 'hard') {
+        // Advanced Analytical & Constraint across 4 distinct angles
+        if (angle === 0) {
+          qText = `Under which critical condition or constraint is the statement regarding "${keyTerm}" valid in ${topicTitle}?`;
+        } else if (angle === 1) {
+          qText = `When analyzing "${cleanStatement.slice(0, 70)}...", which logical requirement must be satisfied according to ${topicTitle}?`;
+        } else if (angle === 2) {
+          qText = `What is the critical analytical implication of "${keyTerm}" when evaluated alongside "${secondaryTerm}"?`;
+        } else {
+          qText = `Which rigorous conclusion follows if the textbook criteria for "${keyTerm}" are evaluated in an advanced scenario?`;
+        }
+        optA = `When evaluated strictly under the condition that: "${cleanStatement}"`;
+        optB = `Only when all operational constraints and boundary requirements of ${secondaryTerm} are removed`;
+        optC = `Whenever the converse assertion is proven mathematically false across all domains`;
+        optD = `Exclusively in hypothetical situations where ${keyTerm} produces zero observable effect`;
+        explanation = `The textbook specifies on page ${chunk.page_number || 'N/A'} that: "${cleanStatement}"`;
+      } else {
+        // Medium: Application & Conceptual Understanding across 4 distinct angles
+        if (angle === 0) {
+          qText = `How is the principle of "${keyTerm}" applied according to the textbook section on ${topicTitle}?`;
+        } else if (angle === 1) {
+          qText = `Which of the following best explains how "${keyTerm}" operates in connection with "${secondaryTerm}"?`;
+        } else if (angle === 2) {
+          qText = `In the context of ${topicTitle}, what is the practical significance of the statement: "${cleanStatement.slice(0, 60)}..."?`;
+        } else {
+          qText = `How should a student apply the rule regarding "${keyTerm}" when reviewing ${topicTitle}?`;
+        }
+        optA = `It is applied as follows: "${cleanStatement}"`;
+        optB = `It serves merely as a decorative placeholder without active functional application`;
+        optC = `It is used to completely negate the influence of ${secondaryTerm}`;
+        optD = `It is restricted exclusively to ungrounded theoretical models`;
+        explanation = `As explained on page ${chunk.page_number || 'N/A'}: "${cleanStatement}"`;
+      }
+
+      // Check duplicate
+      const isExcluded = excludeTexts.some(ex => ex.toLowerCase() === qText.toLowerCase());
+      const isAlreadyIn = questions.some(q => q.questionText.toLowerCase() === qText.toLowerCase());
+
+      if (!isExcluded && !isAlreadyIn) {
         questions.push({
-          questionText: `According to the textbook section on ${topicTitle}, which of the following statements is correct regarding: "${cleanStatement.slice(0, 80)}..."?`,
+          questionText: qText,
           options: [
-            { id: 'A', text: cleanStatement.slice(0, 90) },
-            { id: 'B', text: `It applies only when ${keyTerm} is strictly undefined or empty` },
-            { id: 'C', text: `It represents the converse assertion of this mathematical rule` },
-            { id: 'D', text: `It is invalid for any positive integer domain` }
+            { id: 'A', text: optA },
+            { id: 'B', text: optB },
+            { id: 'C', text: optC },
+            { id: 'D', text: optD }
           ],
           correctOption: 'A',
-          explanation: `Directly stated in the textbook on page ${chunk.page_number || 'N/A'}: "${cleanStatement.slice(0, 120)}"`,
+          explanation,
+          difficulty: normDiff,
           sourceChunkId: chunk.id,
           sourcePageNumber: chunk.page_number
         });

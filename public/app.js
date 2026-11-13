@@ -1158,7 +1158,11 @@ function renderQuizConfigScreen(topic, history = []) {
   const container = document.getElementById('quiz-runner-container');
   if (!container) return;
 
-  const chapName = AppState.selectedChapter?.name || 'Curriculum Section';
+  const currentTopic = topic || AppState.quizEngine.topic || AppState.selectedTopic;
+  if (!currentTopic) return;
+
+  const chapName = AppState.selectedChapter?.name || currentTopic.name || 'Curriculum Section';
+  const topicName = currentTopic.name || 'Diagnostic Quiz';
   const currentDiff = AppState.quizEngine.difficulty || 'medium';
   const currentCount = AppState.quizEngine.questionCount || 5;
 
@@ -1196,7 +1200,7 @@ function renderQuizConfigScreen(topic, history = []) {
         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
           <span style="font-size: 1.5rem;">🎯</span>
           <h3 style="font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-main);">
-            Diagnostic Assessment: ${escapeHtml(topic.name)}
+            Diagnostic Assessment: ${escapeHtml(topicName)}
           </h3>
         </div>
         <p class="text-muted" style="margin: 0; font-size: 0.875rem;">
@@ -1247,12 +1251,12 @@ function renderQuizConfigScreen(topic, history = []) {
 
 function setQuizDifficulty(diff) {
   AppState.quizEngine.difficulty = diff;
-  renderQuizConfigScreen(AppState.quizEngine.topic);
+  renderQuizConfigScreen(AppState.quizEngine.topic || AppState.selectedTopic);
 }
 
 function setQuizQuestionCount(cnt) {
   AppState.quizEngine.questionCount = cnt;
-  renderQuizConfigScreen(AppState.quizEngine.topic);
+  renderQuizConfigScreen(AppState.quizEngine.topic || AppState.selectedTopic);
 }
 
 async function startTopicQuiz() {
@@ -1360,14 +1364,22 @@ function renderActiveQuizQuestion() {
   const isLastQuestion = currentIdx === total - 1;
   const answeredCount = AppState.quizEngine.answers.size;
 
+  const diff = (currentQ.difficulty || AppState.quizEngine.difficulty || 'medium').toLowerCase();
+  let diffBadge = '';
+  if (diff === 'easy') {
+    diffBadge = `<span class="badge quiz-difficulty-badge" style="background:#ecfdf5; color:#059669; border:1px solid #a7f3d0; font-size:0.75rem; padding:0.2rem 0.6rem; font-weight:600; border-radius:999px;">🟢 Easy (Foundational)</span>`;
+  } else if (diff === 'hard') {
+    diffBadge = `<span class="badge quiz-difficulty-badge" style="background:#fef2f2; color:#dc2626; border:1px solid #fecaca; font-size:0.75rem; padding:0.2rem 0.6rem; font-weight:600; border-radius:999px;">🔴 Hard (Advanced Problem Solving)</span>`;
+  } else {
+    diffBadge = `<span class="badge quiz-difficulty-badge" style="background:#fffbeb; color:#d97706; border:1px solid #fde68a; font-size:0.75rem; padding:0.2rem 0.6rem; font-weight:600; border-radius:999px;">🟡 Medium (Standard Application)</span>`;
+  }
+
   container.innerHTML = `
     <div>
       <!-- Progress Bar & Indicator -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span class="quiz-question-number">Question ${currentIdx + 1} of ${total}</span>
-        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: capitalize;">
-          Difficulty: ${escapeHtml(currentQ.difficulty || AppState.quizEngine.difficulty)}
-        </span>
+        <div>${diffBadge}</div>
       </div>
 
       <div class="quiz-progress-bar-wrap">
