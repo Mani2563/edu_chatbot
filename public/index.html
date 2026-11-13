@@ -3,330 +3,629 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GapFinder AI — Find What the Student Doesn't Know</title>
-  <link rel="stylesheet" href="/style.css">
+  <title>GapFinder AI — Modern Student Learning Workspace</title>
+  <link rel="stylesheet" href="/style.css?v=3">
+  <!-- Supabase Official JavaScript Client for Browser Auth & Direct Storage Uploads -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <!-- Header / Navigation Bar -->
-  <header class="app-header">
-    <div class="header-brand">
-      <div class="logo-icon">🎯</div>
-      <div>
-        <h1 class="brand-title">GapFinder AI</h1>
-        <p class="brand-subtitle">Find What the Student Doesn't Know</p>
+
+  <div class="app-shell">
+
+    <!-- ==================================================================== -->
+    <!-- A. LEFT SIDEBAR — LEARNING LIBRARY                                    -->
+    <!-- ==================================================================== -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <!-- Sidebar Header / Brand -->
+      <div class="sidebar-header">
+        <a class="brand-link" id="brand-home-link">
+          <div class="brand-logo-icon">🎯</div>
+          <div class="brand-info">
+            <span class="brand-name">GapFinder AI</span>
+            <span class="brand-sub">Smart Curriculum Workspace</span>
+          </div>
+        </a>
       </div>
-    </div>
 
-    <!-- Navigation Links -->
-    <nav class="app-nav" id="main-nav">
-      <button class="nav-item active" data-view="dashboard">📊 Dashboard</button>
-      <button class="nav-item" data-view="upload">📁 Upload Materials</button>
-      <button class="nav-item" data-view="topics">🗺️ Topic Map</button>
-      <button class="nav-item" data-view="quiz">✍️ Diagnostic Quiz</button>
-      <button class="nav-item" data-view="report">🔴 Gap Report</button>
-      <button class="nav-item" data-view="plan">📅 Revision Plan</button>
-      <button class="nav-item" data-view="progress">📈 Progress</button>
-      <button class="nav-item" data-view="explain">💡 Explain Topic</button>
-    </nav>
-
-    <!-- User / Auth Controls -->
-    <div class="header-auth" id="header-auth">
-      <span class="user-badge" id="user-display">Not Logged In</span>
-      <button class="btn btn-secondary btn-sm" id="auth-btn">Login</button>
-    </div>
-  </header>
-
-  <!-- System Health & Status Banner -->
-  <div id="status-banner" class="status-banner">
-    <span class="status-indicator" id="status-indicator"></span>
-    <span id="status-text">Checking backend connection...</span>
-  </div>
-
-  <!-- Main Application Content Area -->
-  <main class="app-main">
-    <!-- View 1: Login / Auth -->
-    <section id="view-login" class="view-panel" style="display: none;">
-      <div class="auth-card">
-        <div class="auth-header">
-          <h2>Student Portal Login</h2>
-          <p>Access your diagnostic gap reports, personalized study plans, and learning analytics.</p>
-        </div>
-        <form id="login-form">
-          <div class="form-group">
-            <label for="login-email">Email Address</label>
-            <input type="email" id="login-email" class="form-control" placeholder="student@example.com" required>
-          </div>
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary btn-block">Sign In with Supabase</button>
-          </div>
-        </form>
-
-        <div class="auth-divider"><span>OR QUICK ACCESS FOR EVALUATORS</span></div>
-
-        <div class="demo-login-box">
-          <p><strong>Testing this assignment?</strong> Use 1-click evaluator demo profile:</p>
-          <button type="button" class="btn btn-outline btn-block" id="demo-login-btn">
-            🚀 1-Click Demo Login (Evaluator / Judge)
+      <!-- Action: Upload Material & Dashboard Nav -->
+      <div class="sidebar-actions">
+        <button class="sidebar-upload-btn" id="btn-open-upload-modal">
+          <span>📁 Upload Material</span>
+        </button>
+        <div class="sidebar-nav-menu">
+          <button class="sidebar-nav-btn active" id="nav-btn-dashboard" data-view="dashboard">
+            <span>📊 Dashboard</span>
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-gap-analysis" data-view="gap-analysis">
+            <span>🎯 Gap Analysis</span>
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-revision-plan" data-view="revision-plan">
+            <span>📅 Revision Plan</span>
           </button>
         </div>
       </div>
-    </section>
 
-    <!-- View 2: Dashboard -->
-    <section id="view-dashboard" class="view-panel">
-      <div class="panel-header">
-        <div>
-          <h2>Diagnostic Learning Dashboard</h2>
-          <p class="text-muted">Proactive study assessment: We diagnose your hidden gaps and prescribe your personalized revision plan.</p>
+      <!-- Section: My Learning Library -->
+      <div class="sidebar-library-wrapper">
+        <div class="sidebar-section-header">
+          <span>MY LEARNING LIBRARY</span>
+          <button class="btn-icon" id="btn-refresh-library" title="Refresh library" style="width:24px;height:24px;font-size:0.75rem;">🔄</button>
         </div>
-        <button class="btn btn-primary" id="start-diagnosis-btn">Start Quick Diagnostic Quiz</button>
-      </div>
-
-      <!-- Quick Metrics Grid -->
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-icon">📚</div>
-          <div class="metric-data">
-            <div class="metric-value" id="stat-docs-count">0</div>
-            <div class="metric-label">Uploaded Documents</div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">🗺️</div>
-          <div class="metric-data">
-            <div class="metric-value" id="stat-topics-count">0</div>
-            <div class="metric-label">Mapped Topics</div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">🔴</div>
-          <div class="metric-data">
-            <div class="metric-value text-danger" id="stat-weak-count">0</div>
-            <div class="metric-label">Weak Gaps Identified</div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">🟢</div>
-          <div class="metric-data">
-            <div class="metric-value text-success" id="stat-strong-count">0</div>
-            <div class="metric-label">Mastered Topics</div>
-          </div>
+        <div class="library-subjects-list" id="library-subjects-list">
+          <p class="text-muted" style="font-size: 0.8rem; padding: 0.5rem;">Loading your library...</p>
         </div>
       </div>
 
-      <!-- Action Banners -->
-      <div class="dashboard-grid">
-        <div class="card">
-          <div class="card-header">
-            <h3>How GapFinder AI Works</h3>
-          </div>
-          <div class="card-body">
-            <ol class="workflow-steps">
-              <li><strong>Upload Materials:</strong> Add your syllabus, notes, textbook chapters, and past exam papers.</li>
-              <li><strong>Automatic Topic Mapping:</strong> AI maps syllabus topics and weights them by past exam frequency.</li>
-              <li><strong>Diagnostic Quiz:</strong> Take questions strictly grounded in your materials with exact citations.</li>
-              <li><strong>Gap Diagnosis:</strong> View topics classified as Weak (🔴), Medium (🟡), or Strong (🟢) with evidence.</li>
-              <li><strong>Personalized Revision:</strong> Follow a daily treatment schedule tailored to your available study time.</li>
-            </ol>
+      <!-- Sidebar Footer / User Profile -->
+      <div class="sidebar-footer">
+        <div class="sidebar-user-info" id="sidebar-user-info">
+          <div class="sidebar-user-avatar" id="user-avatar-initials">?</div>
+          <span class="sidebar-user-name" id="user-display-name">Checking session...</span>
+        </div>
+        <button class="btn btn-outline btn-sm" id="auth-btn">Sign In</button>
+      </div>
+    </aside>
+
+    <!-- ==================================================================== -->
+    <!-- B. CENTER — MAIN LEARNING WORKSPACE                                  -->
+    <!-- ==================================================================== -->
+    <main class="app-workspace">
+
+      <!-- Workspace Top Bar -->
+      <header class="workspace-header">
+        <div class="workspace-header-left">
+          <button class="btn-icon sidebar-toggle" id="btn-toggle-sidebar" title="Toggle Sidebar">☰</button>
+          <div class="workspace-breadcrumbs" id="workspace-breadcrumbs">
+            <span class="crumb active">Dashboard</span>
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-header">
-            <h3>Current Assessment Status</h3>
-          </div>
-          <div class="card-body" id="dashboard-status-content">
-            <p class="text-muted">No diagnostic attempts recorded yet. Upload study material or click below to begin.</p>
-            <div class="btn-group mt-3">
-              <button class="btn btn-secondary" onclick="navigateTo('upload')">Go to Uploads</button>
-              <button class="btn btn-primary" onclick="navigateTo('quiz')">Take Diagnostic</button>
+        <div class="workspace-header-right">
+          <button class="btn-ask-ai" id="btn-toggle-ai-drawer">
+            <span>✨ Ask AI Assistant</span>
+            <span class="ai-context-indicator" id="ai-context-indicator" style="display:none;">Active</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Workspace Body (Scrollable Content Container) -->
+      <div class="workspace-body" id="workspace-body">
+
+        <!-- VIEW 1: AUTHENTICATION / LOGIN -->
+        <section id="view-login" class="view-panel" style="display: none;">
+          <div class="auth-card">
+            <div id="auth-signedin-state" style="display: none; text-align: center;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+              <h2>Welcome Back!</h2>
+              <p class="text-muted mb-3" id="signedin-user-text">You are signed in.</p>
+              <div class="btn-group" style="justify-content: center; flex-direction: column; gap: 0.75rem;">
+                <button type="button" class="btn btn-primary" onclick="navigateTo('dashboard')">📊 Go to Dashboard</button>
+                <button type="button" class="btn btn-secondary" onclick="openUploadModal()">📁 Upload Material</button>
+                <button type="button" class="btn btn-outline" onclick="signOut()" style="color: #ef4444; border-color: #fca5a5;">Sign Out</button>
+              </div>
+            </div>
+
+            <div id="auth-forms-container">
+              <div class="auth-header">
+                <h2>Student Portal Sign In</h2>
+                <p class="text-muted" style="font-size: 0.85rem;">Sign in to access your uploaded study materials, diagnostic gap maps, and AI learning assistant.</p>
+              </div>
+
+              <div class="auth-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+                <button class="btn btn-secondary btn-sm active flex-1" id="tab-signin-btn" type="button">Sign In</button>
+                <button class="btn btn-secondary btn-sm flex-1" id="tab-signup-btn" type="button">Create Account</button>
+              </div>
+
+              <!-- Sign In Form -->
+              <form id="signin-form">
+                <div class="form-group">
+                  <label for="signin-email">Email Address</label>
+                  <input type="email" id="signin-email" class="form-control" placeholder="student@example.com" required>
+                </div>
+                <div class="form-group">
+                  <label for="signin-password">Password</label>
+                  <input type="password" id="signin-password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="signin-submit-btn">Sign In</button>
+              </form>
+
+              <!-- Sign Up Form (hidden by default) -->
+              <form id="signup-form" style="display: none;">
+                <div class="form-group">
+                  <label for="signup-name">Full Name</label>
+                  <input type="text" id="signup-name" class="form-control" placeholder="Student Name" required>
+                </div>
+                <div class="form-group">
+                  <label for="signup-email">Email Address</label>
+                  <input type="email" id="signup-email" class="form-control" placeholder="student@example.com" required>
+                </div>
+                <div class="form-group">
+                  <label for="signup-password">Password (min. 6 characters)</label>
+                  <input type="password" id="signup-password" class="form-control" placeholder="••••••••" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="signup-submit-btn">Create Account</button>
+              </form>
+
+              <div class="auth-divider"><span>OR QUICK EVALUATOR LOGIN</span></div>
+
+              <div class="demo-login-box">
+                <p><strong>Testing this workspace?</strong> Sign in with evaluator credentials:</p>
+                <button type="button" class="btn btn-outline btn-block" id="evaluator-login-btn">
+                  🚀 1-Click Evaluator Sign-In
+                </button>
+              </div>
             </div>
           </div>
+        </section>
+
+        <!-- VIEW 2: WELCOMING DASHBOARD -->
+        <section id="view-dashboard" class="view-panel">
+          <div class="welcome-banner">
+            <div>
+              <h2>Welcome to GapFinder AI Workspace 🎯</h2>
+              <p>Upload your textbooks and syllabus materials. GapFinder automatically extracts your complete curriculum hierarchy, isolates your learning gaps, and provides instant grounded AI assistance.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openUploadModal()">
+              📁 Upload Study Material
+            </button>
+          </div>
+
+          <!-- Quick Metrics -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-icon">📚</div>
+              <div class="metric-data">
+                <div class="metric-value" id="stat-docs-count">0</div>
+                <div class="metric-label">Uploaded Documents</div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon">🗺️</div>
+              <div class="metric-data">
+                <div class="metric-value" id="stat-topics-count">0</div>
+                <div class="metric-label">Curriculum Nodes Mapped</div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon">📖</div>
+              <div class="metric-data">
+                <div class="metric-value" id="stat-chapters-count">0</div>
+                <div class="metric-label">Verified Chapters</div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon">🟢</div>
+              <div class="metric-data">
+                <div class="metric-value text-success" id="stat-mastered-count">100%</div>
+                <div class="metric-label">Citation Grounding Parity</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity & Quick Navigation -->
+          <div class="dashboard-split-grid">
+            <div class="card">
+              <div class="card-header flex-between">
+                <h3>📚 Your Study Materials</h3>
+                <span class="badge" id="dash-docs-badge">0 documents</span>
+              </div>
+              <div class="card-body" id="dash-materials-list">
+                <p class="text-muted empty-state">No materials uploaded yet. Click "Upload Study Material" to get started.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>💡 How to Use Your Workspace</h3>
+              </div>
+              <div class="card-body">
+                <ol class="workflow-steps" style="padding-left:1.25rem; font-size:0.875rem; display:flex; flex-direction:column; gap:0.65rem;">
+                  <li><strong>Upload:</strong> Drag & drop your PDF, DOCX, or TXT textbook or syllabus.</li>
+                  <li><strong>Explore Hierarchy:</strong> Click any document in the left library to expand its chapters and topics.</li>
+                  <li><strong>Study:</strong> Click any topic or subtopic to read grounded explanations with source citations.</li>
+                  <li><strong>Take Quiz:</strong> Test your understanding with inline quizzes right in your workspace.</li>
+                  <li><strong>Ask AI:</strong> Click the AI Assistant button anytime for context-aware explanations.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gap Analysis Quick Access Card -->
+          <div class="card" style="margin-top: 1.5rem; background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 100%); border-left: 4px solid var(--primary);">
+            <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="margin: 0 0 0.35rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                  <span>🎯 Intelligent Gap Analysis</span>
+                  <span class="badge badge-primary">Phase 6 Engine</span>
+                </h3>
+                <p class="text-muted" style="margin: 0; font-size: 0.875rem;">
+                  Isolate topic-level knowledge gaps grounded in verified quiz performance. View weak, medium, and strong topic diagnoses with actionable study plans.
+                </p>
+              </div>
+              <button class="btn btn-primary" onclick="openGapAnalysisView()">
+                Open Diagnostic Gap Report ➔
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: DOCUMENT CURRICULUM HIERARCHY (Requirement 4) -->
+        <section id="view-doc-hierarchy" class="view-panel" style="display: none;">
+          <div class="doc-hierarchy-container">
+            <!-- Document Header Banner -->
+            <div class="doc-overview-card" id="doc-overview-card">
+              <div class="doc-overview-info">
+                <div class="doc-icon-badge">📄</div>
+                <div class="doc-overview-title">
+                  <h2 id="doc-hierarchy-title">Document Name</h2>
+                  <div class="doc-meta-tags">
+                    <span class="badge badge-primary" id="doc-subject-tag">Subject</span>
+                    <span id="doc-pages-tag">Pages: --</span>
+                    <span id="doc-chunks-tag">Chunks: --</span>
+                  </div>
+                </div>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-secondary btn-sm" id="btn-reextract-hierarchy">🔄 Re-extract Topics</button>
+                <button class="btn btn-outline btn-sm" id="btn-delete-document" style="color:#ef4444;border-color:#fca5a5;">🗑️ Delete</button>
+              </div>
+            </div>
+
+            <!-- Curriculum Tree Card -->
+            <div class="curriculum-tree-card">
+              <div class="tree-card-header">
+                <h3>
+                  <span>🗺️ Curriculum Hierarchy</span>
+                  <span class="badge badge-primary" id="tree-nodes-count-badge">0 nodes</span>
+                </h3>
+                <div class="tree-controls">
+                  <button class="btn btn-secondary btn-sm" id="btn-tree-expand-all">Expand All</button>
+                  <button class="btn btn-secondary btn-sm" id="btn-tree-collapse-all">Collapse All</button>
+                </div>
+              </div>
+              <div class="tree-content" id="curriculum-tree-body">
+                <p class="text-muted empty-state">Loading document hierarchy...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: TOPIC LEARNING WORKSPACE (Section 6) -->
+        <section id="view-topic-workspace" class="view-panel" style="display: none;">
+          <div class="topic-workspace-container">
+            <!-- Topic Header -->
+            <div class="topic-workspace-header">
+              <div class="topic-header-crumbs" id="topic-workspace-crumbs">
+                <span>Mathematics</span> › <span>Chapter 1</span> › <span>Topic 1.1</span>
+              </div>
+              <h2 class="topic-header-title" id="topic-workspace-title">1.1 Introduction</h2>
+              <div class="topic-header-meta">
+                <span class="badge badge-primary" id="topic-level-badge">Topic</span>
+                <span class="badge" id="topic-citation-badge">Page 11 • Chunk Verified</span>
+                <span class="badge badge-strong" id="topic-confidence-badge">High Confidence</span>
+              </div>
+            </div>
+
+            <!-- Action Tabs: Study | Take Quiz | Ask AI -->
+            <div class="topic-nav-tabs">
+              <button class="topic-tab-btn active" id="tab-btn-study" data-tab="study">📖 Study &amp; Review</button>
+              <button class="topic-tab-btn" id="tab-btn-quiz" data-tab="quiz">✍️ Take Quiz</button>
+              <button class="topic-tab-btn" id="tab-btn-ask-ai-trigger" type="button">✨ Ask AI Assistant</button>
+            </div>
+
+            <!-- TAB A: STUDY CONTENT -->
+            <div class="topic-tab-panel active" id="tab-panel-study">
+              <div class="study-content-card">
+                <div class="study-reading-area" id="study-reading-area">
+                  <p class="text-muted">Loading authentic topic materials from document...</p>
+                </div>
+
+                <div class="study-citation-box" id="study-citation-box">
+                  <h4>📌 Authentic Source Reference</h4>
+                  <p id="study-citation-text">Citing verified document chunks from source PDF.</p>
+                </div>
+
+                <div class="btn-group mt-3" style="justify-content: flex-end;">
+                  <button class="btn btn-secondary" onclick="switchTopicTab('quiz')">✍️ Test Yourself (Take Quiz)</button>
+                  <button class="btn btn-primary" onclick="openAiDrawerForCurrentTopic()">✨ Ask AI to Explain</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB B: INLINE QUIZ (Requirement 6.B) -->
+            <div class="topic-tab-panel" id="tab-panel-quiz">
+              <div class="quiz-runner-card" id="quiz-runner-container">
+                <!-- Inline quiz content rendered dynamically -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- VIEW 5: INTELLIGENT GAP ANALYSIS (Phase 6) -->
+        <section id="view-gap-analysis" class="view-panel" style="display: none;">
+          <div class="gap-analysis-container">
+            <!-- Header Banner -->
+            <div class="gap-header-card">
+              <div class="gap-header-left">
+                <div class="gap-header-icon">🎯</div>
+                <div>
+                  <h2 style="margin: 0 0 0.25rem 0;">Diagnostic Gap Analysis</h2>
+                  <p class="text-muted" style="margin: 0; font-size: 0.9rem;">
+                    Identifies what you don't know based on authentic quiz evidence — topic-level learning diagnosis & actionable remediation.
+                  </p>
+                </div>
+              </div>
+              <div class="gap-header-right">
+                <div class="gap-subject-selector-wrapper" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="gap-subject-select" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">Subject:</label>
+                  <select id="gap-subject-select" class="form-control" style="font-size: 0.85rem; padding: 0.4rem 0.75rem; min-width: 180px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <option value="">Loading subjects...</option>
+                  </select>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="btn-refresh-gap-analysis" title="Refresh diagnostic report">🔄 Refresh</button>
+                <button class="btn btn-primary btn-sm" id="btn-goto-revision-plan" title="Generate Revision Plan from Gap Analysis">📅 Revision Plan</button>
+              </div>
+            </div>
+
+            <!-- Data Source & Transparency Pill -->
+            <div id="gap-data-source-banner" style="margin: 1rem 0;"></div>
+
+            <!-- Attempt Progression Banner (Multi-Attempt Comparison) -->
+            <div id="gap-progression-banner" style="margin-bottom: 1.25rem; display: none;"></div>
+
+            <!-- Overall Subject Diagnosis Metrics -->
+            <div class="metrics-grid" id="gap-overall-metrics" style="margin-bottom: 1.5rem;">
+              <div class="metric-card">
+                <div class="metric-icon">🎯</div>
+                <div class="metric-data">
+                  <div class="metric-value" id="gap-stat-overall-accuracy">--%</div>
+                  <div class="metric-label">Overall Accuracy</div>
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon">📝</div>
+                <div class="metric-data">
+                  <div class="metric-value" id="gap-stat-total-questions">0</div>
+                  <div class="metric-label">Assessed Questions</div>
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon">🚨</div>
+                <div class="metric-data">
+                  <div class="metric-value text-danger" id="gap-stat-weak-count" style="color: var(--weak-color);">0</div>
+                  <div class="metric-label">Weak Topics (&lt;50%)</div>
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon">⚠️</div>
+                <div class="metric-data">
+                  <div class="metric-value text-warning" id="gap-stat-medium-count" style="color: var(--medium-color);">0</div>
+                  <div class="metric-label">Medium Topics (50-80%)</div>
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon">🟢</div>
+                <div class="metric-data">
+                  <div class="metric-value text-success" id="gap-stat-strong-count" style="color: var(--strong-color);">0</div>
+                  <div class="metric-label">Strong Topics (≥80%)</div>
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-icon">📚</div>
+                <div class="metric-data">
+                  <div class="metric-value" id="gap-stat-unassessed-count">0</div>
+                  <div class="metric-label">Unassessed Topics</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Diagnostic Body Area -->
+            <div id="gap-analysis-body">
+              <p class="text-muted empty-state">Loading diagnostic gap analysis...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 6: INTELLIGENT REVISION PLAN (Phase 7) -->
+        <section id="view-revision-plan" class="view-panel" style="display: none;">
+          <div class="gap-analysis-container">
+            <!-- Header Banner -->
+            <div class="gap-header-card">
+              <div class="gap-header-left">
+                <div class="gap-header-icon">📅</div>
+                <div>
+                  <h2 style="margin: 0 0 0.25rem 0;">Personalized Revision Plan</h2>
+                  <p class="text-muted" style="margin: 0; font-size: 0.9rem;">
+                    Day-wise targeted study schedule grounded in authentic quiz evidence. Weak topics prioritized for mastery.
+                  </p>
+                </div>
+              </div>
+              <div class="gap-header-right">
+                <div class="gap-subject-selector-wrapper" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="plan-subject-select" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">Subject:</label>
+                  <select id="plan-subject-select" class="form-control" style="font-size: 0.85rem; padding: 0.4rem 0.75rem; min-width: 180px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <option value="">Loading subjects...</option>
+                  </select>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="btn-refresh-revision-plan" title="Refresh revision plan">🔄 Refresh</button>
+              </div>
+            </div>
+
+            <!-- Configuration & Time Budget Card -->
+            <div class="card" style="margin: 1.25rem 0; padding: 1.25rem;">
+              <h3 style="margin: 0 0 0.75rem 0; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>⏱️</span> Study Time Budget & Availability
+              </h3>
+              <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">
+                Customize your revision schedule by specifying your available study days and daily study hours.
+              </p>
+              <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex: 1; min-width: 180px;">
+                  <label for="plan-input-days" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">
+                    Available Study Days:
+                  </label>
+                  <input type="number" id="plan-input-days" class="form-control" min="1" max="60" value="5" style="width: 100%; padding: 0.5rem 0.75rem; font-size: 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                </div>
+                <div style="flex: 1; min-width: 180px;">
+                  <label for="plan-input-hours" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">
+                    Daily Study Hours:
+                  </label>
+                  <input type="number" id="plan-input-hours" class="form-control" min="0.5" max="12" step="0.5" value="2" style="width: 100%; padding: 0.5rem 0.75rem; font-size: 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                </div>
+                <div>
+                  <button class="btn btn-primary" id="btn-generate-plan" style="padding: 0.55rem 1.25rem; font-size: 0.9rem; font-weight: 600;">
+                    🚀 Generate Revision Plan
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Source & Transparency Banner -->
+            <div id="plan-data-source-banner" style="margin: 1rem 0;"></div>
+
+            <!-- Plan Summary & Progress Section -->
+            <div id="plan-progress-card" class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
+                <div>
+                  <h4 style="margin: 0; font-size: 1rem;" id="plan-subject-title">Mathematics Revision Schedule</h4>
+                  <p class="text-muted" style="margin: 0.2rem 0 0 0; font-size: 0.85rem;" id="plan-meta-subtitle">5 Days • 10 Total Hours</p>
+                </div>
+                <div style="text-align: right;">
+                  <span id="plan-completion-stat" style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">0% Completed</span>
+                  <p class="text-muted" style="margin: 0; font-size: 0.8rem;" id="plan-task-count-stat">0 of 0 tasks</p>
+                </div>
+              </div>
+              <div style="width: 100%; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                <div id="plan-progress-bar-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+              </div>
+            </div>
+
+            <!-- Schedule Days Container -->
+            <div id="revision-plan-schedule">
+              <div class="empty-state">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📅</div>
+                <h3>No Revision Plan Generated Yet</h3>
+                <p class="text-muted">Set your study days and daily hours above, then click "Generate Revision Plan" to build a schedule grounded in your diagnostic gaps.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ==================================================================== -->
+    <!-- C. RIGHT SIDE — AI ASSISTANT DRAWER (Section 7)                      -->
+    <!-- ==================================================================== -->
+    <aside class="ai-drawer" id="ai-drawer">
+      <div class="ai-drawer-header">
+        <div class="ai-drawer-title">
+          <span>✨ GapFinder AI Assistant</span>
+          <small id="ai-drawer-context-label">Context-Aware Study Partner</small>
+        </div>
+        <button class="btn-icon btn-close-drawer" id="btn-close-ai-drawer" title="Close Drawer">✕</button>
+      </div>
+
+      <!-- Context Bar -->
+      <div class="ai-drawer-context-pill" id="ai-drawer-context-pill">
+        <span>📍</span>
+        <span id="ai-drawer-context-text">General Context (No topic selected)</span>
+      </div>
+
+      <!-- Quick Suggested Prompt Pills -->
+      <div class="ai-drawer-prompts" id="ai-drawer-prompts">
+        <button class="prompt-pill" data-prompt="Explain this topic simply in 3 key points.">💡 Explain simply</button>
+        <button class="prompt-pill" data-prompt="Give me a real-world example of this concept.">🌍 Real-world example</button>
+        <button class="prompt-pill" data-prompt="What are the essential formulas and definitions to remember?">📌 What to remember</button>
+        <button class="prompt-pill" data-prompt="Quiz me with one conceptual question on this topic.">❓ Test understanding</button>
+      </div>
+
+      <!-- Messages History -->
+      <div class="ai-drawer-messages" id="ai-drawer-messages">
+        <div class="ai-bubble ai-bubble-assistant">
+          <p>Hello! I am your <strong>GapFinder Learning Assistant</strong>. Ask me anything about your uploaded study materials, and I will answer strictly using verified textbook content.</p>
         </div>
       </div>
-    </section>
 
-    <!-- View 3: Upload Materials -->
-    <section id="view-upload" class="view-panel" style="display: none;">
-      <div class="panel-header">
-        <div>
-          <h2>Upload Study Materials</h2>
-          <p class="text-muted">Upload Syllabus, Notes, Textbooks, or Past Papers (PDF, DOCX, TXT).</p>
+      <!-- Chat Input Form -->
+      <form class="ai-drawer-input-form" id="ai-drawer-form">
+        <input type="text" id="ai-drawer-input" class="form-control" placeholder="Ask about this topic or document..." required>
+        <button type="submit" class="btn btn-primary" id="ai-drawer-send-btn">Send</button>
+      </form>
+    </aside>
+
+    <!-- AI Drawer Backdrop (for Mobile & Tablet) -->
+    <div class="ai-drawer-backdrop" id="ai-drawer-backdrop"></div>
+
+    <!-- ==================================================================== -->
+    <!-- UPLOAD MODAL EXPERIENCE (Section 5)                                  -->
+    <!-- ==================================================================== -->
+    <div class="modal-overlay" id="upload-modal" style="display: none;">
+      <div class="upload-modal-card">
+        <div class="modal-header">
+          <h3>Upload Study Material</h3>
+          <button class="btn-icon" id="btn-close-upload-modal" title="Close">✕</button>
         </div>
-      </div>
-
-      <div class="card mb-4">
-        <div class="card-body">
+        <div class="modal-body">
           <form id="upload-form">
-            <div class="form-row">
-              <div class="form-group flex-2">
-                <label for="upload-file">Select Document File</label>
-                <input type="file" id="upload-file" class="form-control" accept=".pdf,.docx,.txt" required>
-                <small class="text-muted">Accepted formats: .pdf, .docx, .txt (Max size: 10MB)</small>
-              </div>
-              <div class="form-group flex-1">
-                <label for="upload-type">Document Classification</label>
-                <select id="upload-type" class="form-control" required>
-                  <option value="syllabus">Syllabus</option>
-                  <option value="notes">Notes / Lecture Slides</option>
-                  <option value="textbook">Textbook Chapter</option>
-                  <option value="past_paper">Past Examination Paper</option>
-                </select>
+            <!-- Dropzone -->
+            <div class="dropzone-area" id="upload-dropzone">
+              <div class="dropzone-icon">📁</div>
+              <div class="dropzone-text">Drag &amp; drop study materials here</div>
+              <div class="dropzone-sub">Supports PDF, DOCX, and TXT (Max: 10 MB)</div>
+              <div style="margin-top: 1rem;">
+                <label for="upload-file-input" class="btn btn-secondary btn-sm" style="cursor:pointer;">Browse Files</label>
+                <input type="file" id="upload-file-input" accept=".pdf,.docx,.txt" style="display: none;">
               </div>
             </div>
-            <button type="submit" class="btn btn-primary" id="upload-btn">Upload & Process Document</button>
-          </form>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="card-header flex-between">
-          <h3>Your Processed Documents</h3>
-          <span class="badge" id="docs-count-badge">0 documents</span>
-        </div>
-        <div class="card-body">
-          <div id="documents-list-container">
-            <p class="text-muted empty-state">No documents uploaded yet. Upload a syllabus or textbook chapter above to begin.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- View 4: Topic Map -->
-    <section id="view-topics" class="view-panel" style="display: none;">
-      <div class="panel-header flex-between">
-        <div>
-          <h2>Syllabus Topic Map</h2>
-          <p class="text-muted">Structured syllabus hierarchy linked with source citations and past exam frequency.</p>
-        </div>
-        <button class="btn btn-secondary" id="refresh-topics-btn">🔄 Generate / Rebuild Topic Map</button>
-      </div>
-      <div id="topics-tree-container" class="card">
-        <div class="card-body">
-          <p class="text-muted empty-state">No topic map generated yet. Upload a syllabus document and click "Generate / Rebuild Topic Map".</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- View 5: Diagnostic Quiz -->
-    <section id="view-quiz" class="view-panel" style="display: none;">
-      <div class="panel-header flex-between">
-        <div>
-          <h2>Diagnostic Quiz Assessment</h2>
-          <p class="text-muted">Grounded questions created directly from your uploaded materials with exact source citations.</p>
-        </div>
-        <button class="btn btn-primary" id="generate-quiz-btn">✨ Generate New Diagnostic Quiz</button>
-      </div>
-
-      <div id="quiz-container">
-        <div class="card">
-          <div class="card-body">
-            <p class="text-muted empty-state">No active quiz. Select a topic or click "Generate New Diagnostic Quiz" to begin your diagnosis.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- View 6: Gap Report -->
-    <section id="view-report" class="view-panel" style="display: none;">
-      <div class="panel-header flex-between">
-        <div>
-          <h2>Diagnostic Gap Report</h2>
-          <p class="text-muted">Clear diagnostic breakdown of what you know and what you don't know.</p>
-        </div>
-      </div>
-
-      <div class="gap-legend mb-3">
-        <span class="badge badge-weak">🔴 Weak (&lt; 50%) — Needs Immediate Revision</span>
-        <span class="badge badge-medium">🟡 Medium (50% - 74%) — Partially Mastered</span>
-        <span class="badge badge-strong">🟢 Strong (≥ 75%) — Mastered</span>
-      </div>
-
-      <div id="gap-report-container" class="card">
-        <div class="card-body">
-          <p class="text-muted empty-state">Take a diagnostic quiz to generate your first Gap Report.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- View 7: Revision Plan -->
-    <section id="view-plan" class="view-panel" style="display: none;">
-      <div class="panel-header">
-        <div>
-          <h2>Personalized Revision Treatment Plan</h2>
-          <p class="text-muted">Prioritized schedule targeting your weakest and most exam-critical areas first.</p>
-        </div>
-      </div>
-
-      <div class="card mb-4">
-        <div class="card-body">
-          <form id="plan-form" class="form-row">
-            <div class="form-group flex-1">
-              <label for="plan-days">Available Days Before Exam</label>
-              <input type="number" id="plan-days" class="form-control" min="1" max="60" value="5" required>
+            <!-- Selected File Display -->
+            <div id="upload-file-details" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.85rem;">
+              <div class="flex-between">
+                <span id="selected-file-name" style="font-weight: 600;">document.pdf</span>
+                <span id="selected-file-size" class="text-muted">2.4 MB</span>
+              </div>
             </div>
-            <div class="form-group flex-1">
-              <label for="plan-hours">Study Hours Per Day</label>
-              <input type="number" id="plan-hours" class="form-control" min="1" max="12" value="2" required>
+
+            <!-- Upload Progress Stages -->
+            <div class="upload-stages-list" id="upload-stages-list" style="display: none;">
+              <div class="stage-item" id="stage-1">
+                <span class="stage-icon">⏳</span>
+                <span>1. Uploading document to secure storage</span>
+              </div>
+              <div class="stage-item" id="stage-2">
+                <span class="stage-icon">⏳</span>
+                <span>2. Extracting text &amp; layout</span>
+              </div>
+              <div class="stage-item" id="stage-3">
+                <span class="stage-icon">⏳</span>
+                <span>3. Processing content &amp; chunk indexing</span>
+              </div>
+              <div class="stage-item" id="stage-4">
+                <span class="stage-icon">⏳</span>
+                <span>4. Generating curriculum hierarchy</span>
+              </div>
+              <div class="stage-item" id="stage-5">
+                <span class="stage-icon">⏳</span>
+                <span>5. Ready to study</span>
+              </div>
             </div>
-            <div class="form-group flex-1 flex-end">
-              <button type="submit" class="btn btn-primary btn-block" id="generate-plan-btn">Generate / Update Plan</button>
+
+            <div id="upload-error-box" style="display: none; margin-top: 1rem; padding: 0.75rem; background: var(--weak-bg); color: var(--weak-color); border: 1px solid var(--weak-border); border-radius: var(--radius-sm); font-size: 0.85rem;"></div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+              <button type="button" class="btn btn-secondary" id="btn-cancel-upload">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-upload" disabled>Upload &amp; Process</button>
             </div>
           </form>
         </div>
       </div>
+    </div>
 
-      <div id="plan-container" class="card">
-        <div class="card-body">
-          <p class="text-muted empty-state">Configure your available study days and hours above to generate your prioritized plan.</p>
-        </div>
-      </div>
-    </section>
+  </div>
 
-    <!-- View 8: Progress History -->
-    <section id="view-progress" class="view-panel" style="display: none;">
-      <div class="panel-header">
-        <div>
-          <h2>Learning Progress & History</h2>
-          <p class="text-muted">Track mastery improvements across diagnostic quiz attempts over time.</p>
-        </div>
-      </div>
-      <div id="progress-container" class="card">
-        <div class="card-body">
-          <p class="text-muted empty-state">No historical attempts recorded yet.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- View 9: Explain This Topic -->
-    <section id="view-explain" class="view-panel" style="display: none;">
-      <div class="panel-header">
-        <div>
-          <h2>Explain This Topic (RAG Assistant)</h2>
-          <p class="text-muted">Ask questions strictly answered from your uploaded materials with verified source citations.</p>
-        </div>
-      </div>
-
-      <div class="chat-container card">
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-bubble chat-assistant">
-            <p>Hello! I am your <strong>GapFinder RAG Assistant</strong>. I answer questions <em>strictly</em> using the study materials, notes, and textbooks you uploaded, with exact citations. If something is not in your materials, I will tell you honestly.</p>
-          </div>
-        </div>
-        <form id="chat-form" class="chat-input-bar">
-          <input type="text" id="chat-input" class="form-control" placeholder="Ask a question about your uploaded materials..." required>
-          <button type="submit" class="btn btn-primary" id="chat-send-btn">Ask</button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <!-- App Script -->
-  <script src="/app.js"></script>
+  <!-- App Controller Script -->
+  <script src="/app.js?v=3"></script>
 </body>
 </html>
-

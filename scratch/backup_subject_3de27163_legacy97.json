@@ -1,0 +1,2544 @@
+{
+  "subject": {
+    "id": "3de27163-c9b0-45ec-8111-74732da73049",
+    "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+    "source_document_id": "5a06491f-d395-42ea-9405-51e7a2075141",
+    "name": "Xth maths em",
+    "description": "Extracted syllabus outline for xth maths em",
+    "status": "approved",
+    "fingerprint": "8929c37b2b15fed28c273abcde318f017ee59dabd09742f573559566485762af",
+    "metadata": {
+      "chunkCount": 1000,
+      "extractedAt": "2026-11-13T03:44:26.224Z",
+      "sourceFileName": "xth maths em.pdf"
+    },
+    "created_at": "2026-11-13T03:44:25.867148+00:00",
+    "updated_at": "2026-11-13T03:55:34.238+00:00"
+  },
+  "topics": [
+    {
+      "id": "d6bb59a9-d2ec-4483-a9d6-5c535d94c3e4",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.1  INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 49,
+      "source_references": [
+        {
+          "chunkId": "5c9312af-e712-4324-87a6-a70d9786f179",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 11,
+          "sectionTitle": "1.1  INTRODUCTION"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "c08e365d-7864-4726-aceb-c31117bb652f",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.2.2  NON-TERMINATING, RECURRING DECIMALS IN RATIONAL",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 50,
+      "source_references": [
+        {
+          "chunkId": "2a4f27ad-3a0b-46f4-881d-9a8765bd4d36",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 22,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "8fed5ff7-2f45-426b-8004-9768250fde2b",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.3    IRRATIONAL NUMBERS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 51,
+      "source_references": [
+        {
+          "chunkId": "3d71029f-19f1-446f-a1ad-bb37d28c8857",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 24,
+          "sectionTitle": "2,3,5"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "ea08149a-b042-4e48-a03e-7be106ed194b",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "8fed5ff7-2f45-426b-8004-9768250fde2b",
+      "name": "log3",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 52,
+      "source_references": [
+        {
+          "chunkId": "7f2b3628-096e-4cfd-925c-1333f9d092aa",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 35,
+          "sectionTitle": "THINK AND DISCUSS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "5689cad9-5bbb-4f96-99d5-d52329451015",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "8fed5ff7-2f45-426b-8004-9768250fde2b",
+      "name": "log3",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 53,
+      "source_references": [
+        {
+          "chunkId": "7f2b3628-096e-4cfd-925c-1333f9d092aa",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 35,
+          "sectionTitle": "THINK AND DISCUSS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "a0117542-e356-44fd-af44-48ea0b17c226",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 54,
+      "source_references": [
+        {
+          "chunkId": "434d23d1-2e50-4efa-b0be-e946c5608bfa",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 38,
+          "sectionTitle": "2.1    INTRODUCTION"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "ba72a325-3fcd-484c-86ab-7e96f4b7b54d",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.2.1  ROSTER FORM AND SET BUILDER FORM",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 55,
+      "source_references": [
+        {
+          "chunkId": "413a5ab1-3262-4241-8863-c6e99b776c2d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 40,
+          "sectionTitle": "2.2.1  ROSTER FORM AND SET BUILDER FORM"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "5ec10236-eac1-45c2-ba6d-425eaa8411cb",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.2.1  ROSTER FORM AND SET BUILDER FORM",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 56,
+      "source_references": [
+        {
+          "chunkId": "4683d18c-2f32-4de2-9a91-991eaf68a9dd",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 40,
+          "sectionTitle": "2.2.1  ROSTER FORM AND SET BUILDER FORM"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "48cbf9ab-2cd9-4cfb-bb7a-74c978eb5272",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.3  EMPTY SET",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 57,
+      "source_references": [
+        {
+          "chunkId": "6e105b82-d78a-478e-809e-0203b695af72",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 44,
+          "sectionTitle": "= 4}"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "c336b0b3-24d1-4f0e-a391-27142fca298d",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.5    VENN DIAGRAMS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 58,
+      "source_references": [
+        {
+          "chunkId": "d9b83978-db1d-4cf1-8687-fd5aca0f7940",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 47,
+          "sectionTitle": "Ì   AA"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "c03ef259-930e-4452-95bc-57a544ccb5ea",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.6  BASIC OPERATIONS ON SETS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 59,
+      "source_references": [
+        {
+          "chunkId": "5df891c3-1e2e-4eca-8859-f46311cffcc0",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 48,
+          "sectionTitle": "2.6.1  UNION OF SETS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "c316acfd-9b2a-4c63-99ba-9106b4de72fb",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.6.2   INTERSECTION OF SETS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 60,
+      "source_references": [
+        {
+          "chunkId": "001dd49a-4be0-43e2-aa32-665dfa3d5670",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 49,
+          "sectionTitle": "= {1, 2, 3, 4, 2, 4, 6, 8}"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "d0d8d39f-c91a-41c9-80b3-3d4b713e6362",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "3.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 61,
+      "source_references": [
+        {
+          "chunkId": "82130d92-a5e7-4681-a6df-7d2f5a6eda50",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 61,
+          "sectionTitle": "= 5P + 2"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9d22a9a5-b663-4ade-b6eb-342e45cee3e6",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "3.2.1  DEGREE OF A POLYNOMIAL",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 62,
+      "source_references": [
+        {
+          "chunkId": "f9b507c8-53e0-4a53-8766-7aabbf082356",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 62,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "fa6de55d-6e31-4351-80ca-1be434d0f29e",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "3.3  WORKING WITH POLYNOMIALS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 63,
+      "source_references": [
+        {
+          "chunkId": "8912c087-91b5-4ce5-86f5-8fe66edef3af",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 65,
+          "sectionTitle": "3.4 GEOMETRICAL MEANING OF THE ZEROES OF A POLYNOMIAL"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9a490a5d-9bed-4a2e-b69a-37f259ae2a1e",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "3.5  RELATIONSHIP BETWEEN ZEROES AND COEFFICIENTS OF A POLYNOMIAL",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 64,
+      "source_references": [
+        {
+          "chunkId": "c3d318fd-5d75-4739-a1d7-35b2b59eec13",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 75,
+          "sectionTitle": "3.5  RELATIONSHIP BETWEEN ZEROES AND COEFFICIENTS OF A POLYNOMIAL"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "dc651dd0-5e6e-4bd3-9b1f-2d857b5899c4",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "3.6 CUBIC POLYNOMIALS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 65,
+      "source_references": [
+        {
+          "chunkId": "157a993b-b7d6-457a-8c11-f9fcb8466482",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 79,
+          "sectionTitle": "{4   (   2)}(   2)4"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "fd79d1dd-796a-4347-82ee-5a336a6c9ed1",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "dc651dd0-5e6e-4bd3-9b1f-2d857b5899c4",
+      "name": "abgxxx",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 66,
+      "source_references": [
+        {
+          "chunkId": "d4836807-f6a4-4396-bfb5-8cc2d18a7fa5",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 79,
+          "sectionTitle": "(),(),"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "79b62047-0a67-4499-bdc7-a5faeb1114fc",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "4.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 67,
+      "source_references": [
+        {
+          "chunkId": "64faac92-df87-4245-ba9f-aedaa626fb7a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 87,
+          "sectionTitle": "THINK - DISCUSS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "0df25fec-f51f-485a-bc0c-817ed96890b4",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "79b62047-0a67-4499-bdc7-a5faeb1114fc",
+      "name": "x + 1 = 0",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 68,
+      "source_references": [
+        {
+          "chunkId": "a11a11d1-3f89-42ce-876a-2416723ae20e",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 90,
+          "sectionTitle": "TRY THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "0c03d440-e5bb-4a33-b0cd-87686efac97c",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "4.2 SOLUTIONS OF PAIRS OF LINEAR EQUATIONS IN TWO VARIABLES",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 69,
+      "source_references": [
+        {
+          "chunkId": "a11a11d1-3f89-42ce-876a-2416723ae20e",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 90,
+          "sectionTitle": "TRY THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "433afbd6-dfc5-4857-9573-8d7b8cec0871",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "4.3.2  ELIMINATION METHOD",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 70,
+      "source_references": [
+        {
+          "chunkId": "38a00122-afaf-442a-8933-b752ef40c97d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 102,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "5b7e3ba8-c826-438b-8ab1-60ff603e8dd0",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "433afbd6-dfc5-4857-9573-8d7b8cec0871",
+      "name": "x - 2 = 0",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 71,
+      "source_references": [
+        {
+          "chunkId": "bddc1abc-1ed6-46f7-88b5-748868b4db6c",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 122,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "bb5c25d8-d6f0-4f16-b186-bf3fcd524c73",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "5.5 NATURE OF ROOTS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 72,
+      "source_references": [
+        {
+          "chunkId": "5cd5d471-7fef-4014-8ed9-8cca75397ec7",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 134,
+          "sectionTitle": "5.5 NATURE OF ROOTS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "be72c857-8aee-4224-be5a-50fb30fc1cf0",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "6.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 73,
+      "source_references": [
+        {
+          "chunkId": "ec5675fc-bdf3-4a4f-bd5c-cee28b6cfa45",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 139,
+          "sectionTitle": "6.1    INTRODUCTION"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "f67c96de-113a-43f3-a962-0c274a949c0b",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "6.2  ARITHMETIC PROGRESSIONS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 74,
+      "source_references": [
+        {
+          "chunkId": "279dd827-1843-471c-8e7c-744b991cdafc",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 142,
+          "sectionTitle": "6.2  ARITHMETIC PROGRESSIONS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9f55c017-d672-4f5f-bd31-ec6a0ec934a2",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "f67c96de-113a-43f3-a962-0c274a949c0b",
+      "name": "a",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 75,
+      "source_references": [
+        {
+          "chunkId": "60e7e485-54d6-4745-a8ba-719cd0e6d93c",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 145,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "abf17a8b-bfed-4f93-b81c-4a90460b4f51",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "f67c96de-113a-43f3-a962-0c274a949c0b",
+      "name": "a",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 76,
+      "source_references": [
+        {
+          "chunkId": "60e7e485-54d6-4745-a8ba-719cd0e6d93c",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 145,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "f9d969e9-aa35-486d-9c8c-609067df47f2",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "f67c96de-113a-43f3-a962-0c274a949c0b",
+      "name": "a",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 77,
+      "source_references": [
+        {
+          "chunkId": "a94fb8a6-3968-4f15-8833-38c4d2a56025",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 145,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "407b05c1-3d61-4a29-822c-61f6cb735375",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "f67c96de-113a-43f3-a962-0c274a949c0b",
+      "name": "a",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 78,
+      "source_references": [
+        {
+          "chunkId": "a94fb8a6-3968-4f15-8833-38c4d2a56025",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 145,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "55c877e8-5930-4ce2-9012-8f38a54797c1",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "4.1  HOW  ‘GAUSS’ FOUND THE SUM OF TERMS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 79,
+      "source_references": [
+        {
+          "chunkId": "58247074-5425-4863-8df5-af92b156b32d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 155,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "e9fe9fec-d294-428d-8864-1ac3e06b2162",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "6.4.2    SUM OF",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 80,
+      "source_references": [
+        {
+          "chunkId": "95581db1-65e5-4400-a1c2-86ea0b03ef8a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 156,
+          "sectionTitle": "[2   (   1)]"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9570b201-2519-47e6-b6be-01273b09dbff",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "0.5 cm, 1.0 cm, 1.5 cm, 2.0 cm, . . . as",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 81,
+      "source_references": [
+        {
+          "chunkId": "f19444ef-07d9-41b9-9be2-a7d8c687981d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 161,
+          "sectionTitle": "0.5 cm, 1.0 cm, 1.5 cm, 2.0 cm, ."
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "d230ecdb-c3ab-4e75-9970-16b724d580a5",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "0.5 cm, 1.0 cm, 1.5 cm, 2.0 cm, . . . as",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 82,
+      "source_references": [
+        {
+          "chunkId": "19c983c7-f337-4f75-8083-71a2eca2151a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 161,
+          "sectionTitle": "0.5 cm, 1.0 cm, 1.5 cm, 2.0 cm, ."
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "faa80164-b629-488c-96ef-0ccf67a792a1",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "6.5  GEOMETRIC PROGRESSIONS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 83,
+      "source_references": [
+        {
+          "chunkId": "0134ea7d-e7c2-4918-a7a1-24d19dfbabf7",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 162,
+          "sectionTitle": "4   16   64   256"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "a3b81acb-3a8a-40d1-988f-f80e87608393",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "6.150 workers were engaged to finish a piece of work in a certain number of days. Four",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 84,
+      "source_references": [
+        {
+          "chunkId": "403ac1c3-495a-44e7-83d5-c57722e42899",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 171,
+          "sectionTitle": "150[2   150    (8   1)(  4)]"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "8ee22ef1-ac79-4322-bd44-940e1a3403c1",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.1  INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 85,
+      "source_references": [
+        {
+          "chunkId": "9d4f049b-4efb-477d-a86f-10e082e3e07b",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 173,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.2  DISTANCE BETWEEN TWO POINTS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 86,
+      "source_references": [
+        {
+          "chunkId": "8d86f622-9dfa-4e8c-8822-97e77fefe75a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 173,
+          "sectionTitle": "7.2  DISTANCE BETWEEN TWO POINTS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "3eab6154-1683-4af4-b1a2-4d083b477ec4",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 87,
+      "source_references": [
+        {
+          "chunkId": "4e4c38aa-e35e-492b-967b-789722c9585f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 174,
+          "sectionTitle": "7.2  DISTANCE BETWEEN TWO POINTS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "ac511ef4-e053-4cdf-a7ec-bb8658761dcf",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 88,
+      "source_references": [
+        {
+          "chunkId": "4e4c38aa-e35e-492b-967b-789722c9585f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 174,
+          "sectionTitle": "7.2  DISTANCE BETWEEN TWO POINTS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "83443cbe-4122-42f6-bf4f-ed4bb85f815c",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 89,
+      "source_references": [
+        {
+          "chunkId": "f6035f3b-feaf-478c-a2cc-6012189c2c3d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 174,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "d973eaf8-f502-4039-b762-90d9608bcc37",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 90,
+      "source_references": [
+        {
+          "chunkId": "6c841753-668c-4221-b505-4ffa965dd47d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 175,
+          "sectionTitle": "7.3DISTANCE BETWEEN TWO POINTS ON A LINE PARALLEL TO THE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "8ab929ef-8b3e-4610-a259-e02e768b90c5",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 91,
+      "source_references": [
+        {
+          "chunkId": "f87adbfe-142b-4fa6-be6c-5e9caebc8e0b",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 175,
+          "sectionTitle": "7.3DISTANCE BETWEEN TWO POINTS ON A LINE PARALLEL TO THE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "5450a391-2b1d-4a54-b22c-586185f08769",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 92,
+      "source_references": [
+        {
+          "chunkId": "f87adbfe-142b-4fa6-be6c-5e9caebc8e0b",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 175,
+          "sectionTitle": "7.3DISTANCE BETWEEN TWO POINTS ON A LINE PARALLEL TO THE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "677ff92c-5f86-45ec-9159-c0ecb6d05c0f",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 93,
+      "source_references": [
+        {
+          "chunkId": "9e5c929d-2cd0-460e-bef6-b872756ada5f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 176,
+          "sectionTitle": "7.3DISTANCE BETWEEN TWO POINTS ON A LINE PARALLEL TO THE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "110fe194-1fd6-4aa3-b0e2-0362eb24596f",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "aa1db9b5-2713-458f-9794-6200e66860a9",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 94,
+      "source_references": [
+        {
+          "chunkId": "9e5c929d-2cd0-460e-bef6-b872756ada5f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 176,
+          "sectionTitle": "7.3DISTANCE BETWEEN TWO POINTS ON A LINE PARALLEL TO THE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.4  DISTANCE BETWEEN ANY TWO POINTS IN THE X-Y PLANE",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 95,
+      "source_references": [
+        {
+          "chunkId": "2ff3c20e-726b-4199-9c02-7fd134440832",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "cfc04db3-bc33-4a95-81b7-caf4f17c5666",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 96,
+      "source_references": [
+        {
+          "chunkId": "2ff3c20e-726b-4199-9c02-7fd134440832",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "dea85682-4cce-4177-a112-9978de83760d",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 97,
+      "source_references": [
+        {
+          "chunkId": "2ff3c20e-726b-4199-9c02-7fd134440832",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "354744b6-40c7-440b-90eb-57d6382cbcb7",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 98,
+      "source_references": [
+        {
+          "chunkId": "36256665-b9eb-4085-bf32-8dc965172a84",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "4d4e7f7c-1d21-471f-a6ad-3ac0352502fc",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 99,
+      "source_references": [
+        {
+          "chunkId": "36256665-b9eb-4085-bf32-8dc965172a84",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "74b594ad-0b1f-49aa-ad0b-27ea2d199332",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 100,
+      "source_references": [
+        {
+          "chunkId": "36256665-b9eb-4085-bf32-8dc965172a84",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "20dfccc1-5ee4-4f7e-b0a5-9f87d90538d1",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 101,
+      "source_references": [
+        {
+          "chunkId": "36256665-b9eb-4085-bf32-8dc965172a84",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "a0abcd1d-9038-4af1-85fc-23f7fd1ddfd2",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "fd56d61f-b1b3-4b36-9fd3-fd72d102fd74",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 102,
+      "source_references": [
+        {
+          "chunkId": "36256665-b9eb-4085-bf32-8dc965172a84",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 177,
+          "sectionTitle": "1212"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "1fe3094a-3ea7-4b66-807c-c72150e82008",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.5    SECTION FORMULA",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 103,
+      "source_references": [
+        {
+          "chunkId": "bc8c52ba-fd6d-4731-beff-0572860279db",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 183,
+          "sectionTitle": "7.5    SECTION FORMULA"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "6e4cb819-6d8b-49b9-85d2-040ff1fecce7",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.6 TRISECTIONAL POINTS OF A LINE",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 104,
+      "source_references": [
+        {
+          "chunkId": "addc6089-ca90-414a-aa11-4e3fb5193f32",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 186,
+          "sectionTitle": "2(  7)   1(2)   2(4)   1(  2)"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "14879e79-cde3-49a3-98fa-39022b289b02",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.8  AREA OF THE TRIANGLE",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 105,
+      "source_references": [
+        {
+          "chunkId": "bbcc3918-2503-4ec1-87aa-7094a8916107",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 192,
+          "sectionTitle": "7.8  AREA OF THE TRIANGLE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "ea95656e-5aa2-427c-a452-1bbff7c22107",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "14879e79-cde3-49a3-98fa-39022b289b02",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 106,
+      "source_references": [
+        {
+          "chunkId": "de2ae9da-f663-4aa1-8211-d8c517d6e3d9",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 193,
+          "sectionTitle": "THINK - DISCUSS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "3750e4a8-65aa-487d-9c55-a0cc673ea23c",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "14879e79-cde3-49a3-98fa-39022b289b02",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 107,
+      "source_references": [
+        {
+          "chunkId": "de2ae9da-f663-4aa1-8211-d8c517d6e3d9",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 193,
+          "sectionTitle": "THINK - DISCUSS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "35967fc9-d1df-4e85-a4f3-2f3acbe179c5",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "14879e79-cde3-49a3-98fa-39022b289b02",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 108,
+      "source_references": [
+        {
+          "chunkId": "de2ae9da-f663-4aa1-8211-d8c517d6e3d9",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 193,
+          "sectionTitle": "THINK - DISCUSS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "2f8b1fa5-a388-4491-bcbd-e60eb079797d",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.9.1    SLOPE OF THE STRAIGHT LINE",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 109,
+      "source_references": [
+        {
+          "chunkId": "2a7033cb-b918-4f33-889d-b265ae027a1f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 199,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "7.9.2    SLOPE OF A LINE JOINING TWO POINTS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 110,
+      "source_references": [
+        {
+          "chunkId": "643078f5-04a8-4147-8792-8b74111ea77f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 201,
+          "sectionTitle": "ACTIVITY"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "bbe5adb4-5917-4ac4-b025-f9c0010baab0",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 111,
+      "source_references": [
+        {
+          "chunkId": "fa6eab08-dc71-4b1f-bb03-647ce15563dc",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "WH AT WE HAVE DISCUSSED"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "233f2a93-68cf-4ac7-b882-5f05c045a00e",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "x",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 112,
+      "source_references": [
+        {
+          "chunkId": "fa6eab08-dc71-4b1f-bb03-647ce15563dc",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "WH AT WE HAVE DISCUSSED"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "7b594df6-cdd1-4116-b44f-9c6657d1eb8a",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 113,
+      "source_references": [
+        {
+          "chunkId": "22dc288b-ee55-4471-8abc-10e79c2fad3c",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "123123"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "32a8dc25-e87b-4c5e-98cc-eacef5c60371",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 114,
+      "source_references": [
+        {
+          "chunkId": "22dc288b-ee55-4471-8abc-10e79c2fad3c",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "123123"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "bcf01b7f-ea56-4f5a-b327-40411b667f34",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 115,
+      "source_references": [
+        {
+          "chunkId": "22dc288b-ee55-4471-8abc-10e79c2fad3c",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "123123"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "b345b473-0171-4647-a12e-5eaddeb18a7a",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 116,
+      "source_references": [
+        {
+          "chunkId": "8425b422-45cf-4d4e-b486-a32eec10acd2",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "123123"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "3e2aefc9-4393-4528-9586-d38d5d001d99",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 117,
+      "source_references": [
+        {
+          "chunkId": "8425b422-45cf-4d4e-b486-a32eec10acd2",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "123123"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9ea9a08f-287d-47e5-8921-58b6d08bb64f",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "5ac01c00-e6e2-40e3-b56c-c242462dc6d7",
+      "name": "y",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 118,
+      "source_references": [
+        {
+          "chunkId": "8425b422-45cf-4d4e-b486-a32eec10acd2",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 204,
+          "sectionTitle": "123123"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "12863cd9-2361-4859-9f42-aea2edde1bd0",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "8.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 119,
+      "source_references": [
+        {
+          "chunkId": "f932d84d-0496-4b02-903a-329e7cc94c7d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 205,
+          "sectionTitle": "8.1    INTRODUCTION"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "3f3fd206-2a2e-40d9-98ba-54500c99b8e2",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "8.3 SIMILARITY OF TRIANGLES",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 120,
+      "source_references": [
+        {
+          "chunkId": "df19de28-cfae-4466-aece-f54deac4382d",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 208,
+          "sectionTitle": "8.3 SIMILARITY OF TRIANGLES"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "c736c53f-bce2-415b-bb81-8fa993bfb536",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.8 m. B",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 121,
+      "source_references": [
+        {
+          "chunkId": "eb536349-b400-4cd5-af63-76387038aaee",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 222,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "d7b4bb68-ed94-4ad4-a1ed-6bfd7c0ec6b6",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.65 m. h m. Q5.4 m. R",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 122,
+      "source_references": [
+        {
+          "chunkId": "eb536349-b400-4cd5-af63-76387038aaee",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 222,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "54159c9b-43c0-4e01-a2ae-ce631b376d00",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.5 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 123,
+      "source_references": [
+        {
+          "chunkId": "eb536349-b400-4cd5-af63-76387038aaee",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 222,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "b4780be3-3047-4082-bedb-135b3f0b1b51",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "0.4 m. C",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 124,
+      "source_references": [
+        {
+          "chunkId": "e0ae2b2a-4b98-49f0-8423-9655e439004a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 223,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "208ce07e-53d1-4800-a0d2-195d1e6eede5",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.5 m. 87.6 m",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 125,
+      "source_references": [
+        {
+          "chunkId": "e0ae2b2a-4b98-49f0-8423-9655e439004a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 223,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "556d7aa1-c44b-4cdf-b87d-e7a62bd6da5b",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.5 m. R",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 126,
+      "source_references": [
+        {
+          "chunkId": "e0ae2b2a-4b98-49f0-8423-9655e439004a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 223,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "894b443f-6f13-4703-9dae-c13208310aa9",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.5 m. 1.5 m. D",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 127,
+      "source_references": [
+        {
+          "chunkId": "e0ae2b2a-4b98-49f0-8423-9655e439004a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 223,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "dd53dca2-65c8-46a6-99c2-1da21bd51722",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.2 m. SCERT",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 128,
+      "source_references": [
+        {
+          "chunkId": "e0ae2b2a-4b98-49f0-8423-9655e439004a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 223,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "0c98d397-0471-4e6e-b6f0-61793467593c",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.2 m/sec. If the lamp post is 3.6m above the ground, find the length of her shadow after",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 129,
+      "source_references": [
+        {
+          "chunkId": "62e37495-9292-4b9f-9b95-5bb0b3aeef42",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 224,
+          "sectionTitle": "4 seconds."
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "8dedd9d4-06a6-4cc6-887e-b838e9c3e659",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "1.2 m/sec. If the lamp post is 3.6m above the ground, find the length of her shadow after",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 130,
+      "source_references": [
+        {
+          "chunkId": "b72ba273-ac97-42b5-8a55-5312ab27ab68",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 224,
+          "sectionTitle": "4.5 cm"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "5b5922ea-25e3-4943-8f4a-002552e1cca8",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "4.5 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 131,
+      "source_references": [
+        {
+          "chunkId": "b72ba273-ac97-42b5-8a55-5312ab27ab68",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 224,
+          "sectionTitle": "4.5 cm"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "790f374d-552d-4ab9-bb33-4b0ae5442de8",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "12.20 m. 6.10 m. 1.82 m. Suggested  Projects",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 132,
+      "source_references": [
+        {
+          "chunkId": "fbba02ab-bc14-4c8d-8d34-b522561df316",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 237,
+          "sectionTitle": "1.82 m."
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "b62eb581-5b23-4dd5-86ab-788970395804",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "12.20 m. 6.10 m. 1.82 m. Suggested  Projects",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 133,
+      "source_references": [
+        {
+          "chunkId": "c5dc7a6b-a757-4ed2-8c32-d9ad58c758de",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 237,
+          "sectionTitle": "SCERT"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "a2776701-da2f-4620-a56e-96702883c8bd",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "9.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 134,
+      "source_references": [
+        {
+          "chunkId": "097f4457-af05-47b1-a77f-baa16bc2c42a",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 239,
+          "sectionTitle": "9.1.1    A  LINE AND A CIRCLE"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "d1b3c2b6-aa12-4c60-813e-3426a6e12cd8",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "a2776701-da2f-4620-a56e-96702883c8bd",
+      "name": "area of DOAB",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 135,
+      "source_references": [
+        {
+          "chunkId": "bcef2b73-62a7-464a-98c6-592bf7e62261",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 253,
+          "sectionTitle": "DO THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9fa6d46d-fb00-42c1-93d9-08f0ae7b35ce",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": "a2776701-da2f-4620-a56e-96702883c8bd",
+      "name": "area of DOAB",
+      "description": null,
+      "hierarchy_level": "subtopic",
+      "display_order": 136,
+      "source_references": [
+        {
+          "chunkId": "8f8028b7-9ba8-4945-8454-b20056e1ca73",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 253,
+          "sectionTitle": "AOB = 120"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "6ce1cb7a-d380-46dc-9e99-ac0fff2220ac",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "3.5 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 137,
+      "source_references": [
+        {
+          "chunkId": "43f49678-eb82-49fe-83e5-4fbe3c849efe",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 257,
+          "sectionTitle": "7 cm."
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "c6ace2a0-2438-4284-a822-21569fa85adb",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "10.1    INTRODUCTION",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 138,
+      "source_references": [
+        {
+          "chunkId": "a494d927-cf9c-41fc-bb48-a91335a1347f",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 259,
+          "sectionTitle": "TRY THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "fe12dc29-1778-4d65-aaf3-ab1cacf0e3d4",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "55.44 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 139,
+      "source_references": [
+        {
+          "chunkId": "7577ca22-f88a-48b2-8e63-4cbf4a3897be",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 263,
+          "sectionTitle": "\u0006\u0006\u0006\u0006\u0006\u0006\u0006=\u0006\u0006"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "b0860f15-3bad-41df-9c58-e3c16dc93dae",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "2.1 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 140,
+      "source_references": [
+        {
+          "chunkId": "7577ca22-f88a-48b2-8e63-4cbf4a3897be",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 263,
+          "sectionTitle": "\u0006\u0006\u0006\u0006\u0006\u0006\u0006=\u0006\u0006"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "803623eb-93f6-4aef-be68-92834870ca01",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "89.83 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 141,
+      "source_references": [
+        {
+          "chunkId": "ac355d99-e70a-4060-bfa7-e1bb1685bef3",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 264,
+          "sectionTitle": "\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006\u0006"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "159a6278-1579-4b3d-8398-31e1a9f76159",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "10.3    VOLUME OF COMBINATION OF SOLIDS",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 142,
+      "source_references": [
+        {
+          "chunkId": "f7a8165f-9025-4bcc-994c-d216d23f0f79",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 270,
+          "sectionTitle": "10.3    VOLUME OF COMBINATION OF SOLIDS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "3934e483-4c18-4def-b967-9435c652bfae",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "218.064 cm  . 710015125",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 143,
+      "source_references": [
+        {
+          "chunkId": "1ac46840-ca5b-4d5e-8277-cd452bfdcd41",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 271,
+          "sectionTitle": "710015125"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "7907aa90-f91a-4374-ac7d-fe29989bd342",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "136.19 cm",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 144,
+      "source_references": [
+        {
+          "chunkId": "06663dc3-a708-4edd-b052-71c862b8212b",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 274,
+          "sectionTitle": "130    222860"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    },
+    {
+      "id": "9c32520d-7699-4222-9e16-f4070b32d1b1",
+      "subject_id": "3de27163-c9b0-45ec-8111-74732da73049",
+      "user_id": "964b1195-ea0b-4b22-a633-d2269d3ce6a1",
+      "parent_topic_id": null,
+      "name": "11.1.1  NAMING THE SIDES IN A RIGHT TRIANGLE",
+      "description": null,
+      "hierarchy_level": "topic",
+      "display_order": 145,
+      "source_references": [
+        {
+          "chunkId": "9a9c7f8a-6930-424f-af08-20bd3edc3904",
+          "fileName": "xth maths em.pdf",
+          "verified": true,
+          "documentId": "5a06491f-d395-42ea-9405-51e7a2075141",
+          "pageNumber": 285,
+          "sectionTitle": "TRY THIS"
+        }
+      ],
+      "extraction_metadata": {
+        "confidence": "high",
+        "isReviewed": false
+      },
+      "created_at": "2026-11-13T03:44:25.867148+00:00",
+      "updated_at": "2026-11-13T03:44:25.867148+00:00"
+    }
+  ],
+  "backedUpAt": "2026-11-13T06:51:29.996Z",
+  "nodeCount": 97
+}
