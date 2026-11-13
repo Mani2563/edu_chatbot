@@ -2689,6 +2689,10 @@ function setupAuthForms() {
             });
           }
           passwordInput?.focus();
+        } else if (data?.session) {
+          handleSessionChange(data.session);
+          showToast('Signed in successfully!', 'success');
+          navigateTo('dashboard');
         }
       } catch (err) {
         showAuthError(`Sign in error: ${err.message}`);
@@ -2761,8 +2765,16 @@ function setupAuthForms() {
         });
 
         if (error) {
-          const lowerErr = error.message.toLowerCase();
+          const lowerErr = (error.message || '').toLowerCase();
           if (lowerErr.includes('already registered') || lowerErr.includes('already exists') || lowerErr.includes('user already in database')) {
+            // Attempt auto-login if they typed the correct existing password
+            const { data: signInData, error: signInErr } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
+            if (!signInErr && signInData?.session) {
+              handleSessionChange(signInData.session);
+              showToast('Welcome back! Signed in to your account.', 'success');
+              navigateTo('dashboard');
+              return;
+            }
             showAuthError(
               `An account already exists with this email address. Please sign in instead.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
               true
@@ -2774,13 +2786,81 @@ function setupAuthForms() {
                 switchToTab('signin');
                 const signinEmail = document.getElementById('signin-email');
                 if (signinEmail) signinEmail.value = email;
+                document.getElementById('signin-password')?.focus();
               });
             }
+            switchToTab('signin');
+            const signinEmail = document.getElementById('signin-email');
+            if (signinEmail) signinEmail.value = email;
+            document.getElementById('signin-password')?.focus();
           } else {
             showAuthError(`Sign up failed: ${error.message}`);
           }
-        } else {
+          return;
+        }
+
+        // If a session was returned directly, log them in immediately
+        if (data?.session) {
+          handleSessionChange(data.session);
+          showToast('Account created successfully!', 'success');
           navigateTo('dashboard');
+          return;
+        }
+
+        // Check if user already exists (Supabase duplicate user detection returns identities: [])
+        const isExistingUser = data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0;
+
+        if (isExistingUser) {
+          // Attempt auto-signin with the entered password:
+          const { data: signInData, error: signInErr } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
+          if (!signInErr && signInData?.session) {
+            handleSessionChange(signInData.session);
+            showToast('Welcome back! Signed in to your account.', 'success');
+            navigateTo('dashboard');
+            return;
+          }
+
+          // If password doesn't match:
+          showAuthError(
+            `An account already exists with this email address. Please enter your existing password to sign in.<br><a href="#" class="auth-switch-link" id="auth-goto-signin">👉 Switch to Sign In</a>`,
+            true
+          );
+          const gotoSignin = document.getElementById('auth-goto-signin');
+          if (gotoSignin) {
+            gotoSignin.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              switchToTab('signin');
+              const signinEmail = document.getElementById('signin-email');
+              if (signinEmail) signinEmail.value = email;
+              document.getElementById('signin-password')?.focus();
+            });
+          }
+          switchToTab('signin');
+          const signinEmail = document.getElementById('signin-email');
+          if (signinEmail) signinEmail.value = email;
+          document.getElementById('signin-password')?.focus();
+          return;
+        }
+
+        // If new user was created but email confirmation is required:
+        if (data?.user && !data?.session) {
+          showAuthError(
+            `Account created! Please check your email inbox at <strong>${escapeHtml(email)}</strong> to confirm your email before signing in.`,
+            true
+          );
+          switchToTab('signin');
+          const signinEmail = document.getElementById('signin-email');
+          if (signinEmail) signinEmail.value = email;
+          return;
+        }
+
+        // Fallback
+        if (AppState.user) {
+          navigateTo('dashboard');
+        } else {
+          switchToTab('signin');
+          const signinEmail = document.getElementById('signin-email');
+          if (signinEmail) signinEmail.value = email;
         }
       } catch (err) {
         showAuthError(`Sign up error: ${err.message}`);
