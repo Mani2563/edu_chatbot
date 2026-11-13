@@ -2197,6 +2197,11 @@ function handleFileSelection(file) {
 }
 
 function openUploadModal() {
+  if (!AppState.user) {
+    showToast('Please sign in to upload study materials.', 'warning');
+    navigateTo('login');
+    return;
+  }
   const modal = document.getElementById('upload-modal');
   if (modal) modal.style.display = 'flex';
   resetUploadModal();
@@ -2214,7 +2219,11 @@ function resetUploadModal() {
   const stages = document.getElementById('upload-stages-list');
   const errorBox = document.getElementById('upload-error-box');
   const submitBtn = document.getElementById('btn-submit-upload');
+  const authWarning = document.getElementById('upload-auth-warning');
 
+  if (authWarning) {
+    authWarning.style.display = AppState.user ? 'none' : 'flex';
+  }
   if (details) details.style.display = 'none';
   if (stages) stages.style.display = 'none';
   if (errorBox) errorBox.style.display = 'none';
@@ -2234,11 +2243,32 @@ function resetUploadModal() {
 
 async function handleUploadSubmit(e) {
   e.preventDefault();
-  if (!selectedUploadFile || !AppState.user) return;
-
   const submitBtn = document.getElementById('btn-submit-upload');
   const stagesList = document.getElementById('upload-stages-list');
   const errorBox = document.getElementById('upload-error-box');
+
+  if (!selectedUploadFile) {
+    if (errorBox) {
+      errorBox.textContent = 'Please choose a study material file (PDF, DOCX, or TXT) first.';
+      errorBox.style.display = 'block';
+    }
+    return;
+  }
+
+  if (!AppState.user) {
+    if (errorBox) {
+      errorBox.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 0.35rem;">⚠️ Student Sign In Required</div>
+        <div style="margin-bottom: 0.6rem; font-size: 0.85rem;">You must be signed in to upload study materials so they can be processed and saved securely to your account.</div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="closeUploadModal(); navigateTo('login');" style="width: 100%; justify-content: center;">
+          🔑 Sign In / Create Account
+        </button>
+      `;
+      errorBox.style.display = 'block';
+    }
+    showToast('Please sign in to upload study materials.', 'warning');
+    return;
+  }
 
   if (submitBtn) submitBtn.disabled = true;
   if (stagesList) stagesList.style.display = 'flex';
@@ -2725,6 +2755,35 @@ function setupAuthForms() {
         showAuthError(`Sign up error: ${err.message}`);
       } finally {
         if (btn) btn.disabled = false;
+      }
+    });
+  }
+  // Quick Sign In Handler
+  const quickSigninBtn = document.getElementById('btn-quick-signin');
+  if (quickSigninBtn) {
+    quickSigninBtn.addEventListener('click', async () => {
+      clearAuthError();
+      const emailInput = document.getElementById('signin-email');
+      const passwordInput = document.getElementById('signin-password');
+      if (emailInput) emailInput.value = 'manikantaanandam2563@gmail.com';
+      if (passwordInput) passwordInput.value = 'Password@123';
+      quickSigninBtn.disabled = true;
+      quickSigninBtn.textContent = 'Signing in...';
+      try {
+        const { error } = await AppState.supabaseClient.auth.signInWithPassword({
+          email: 'manikantaanandam2563@gmail.com',
+          password: 'Password@123'
+        });
+        if (error) {
+          showAuthError(`Sign in failed: ${error.message}`);
+        } else {
+          showToast('Signed in successfully as Manikanta Anandam!', 'success');
+        }
+      } catch (err) {
+        showAuthError(`Sign in error: ${err.message}`);
+      } finally {
+        quickSigninBtn.disabled = false;
+        quickSigninBtn.textContent = '⚡ Quick Sign In as Manikanta';
       }
     });
   }

@@ -134,6 +134,16 @@
                   <button type="submit" class="btn-auth-submit" id="signin-submit-btn">
                     <span>Sign In</span>
                   </button>
+                  <div style="margin-top: 1rem; text-align: center;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                      <span style="flex:1; height:1px; background:var(--border);"></span>
+                      <span>OR QUICK ACCESS</span>
+                      <span style="flex:1; height:1px; background:var(--border);"></span>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-quick-signin" style="width: 100%; justify-content: center; padding: 0.6rem; font-size: 0.85rem;">
+                      ⚡ Quick Sign In as Manikanta
+                    </button>
+                  </div>
                 </form>
 
                 <!-- Sign Up Form (hidden by default) -->
@@ -607,6 +617,15 @@
         </div>
         <div class="modal-body">
           <form id="upload-form">
+            <!-- Unauthenticated Notice Banner -->
+            <div id="upload-auth-warning" style="display: none; margin-bottom: 1rem; padding: 0.65rem 0.85rem; background: #fef3c7; border: 1px solid #fde68a; border-radius: var(--radius-sm); font-size: 0.82rem; color: #92400e; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <span>⚠️</span>
+                <span>Please <strong>Sign In</strong> so your textbooks and learning gaps are saved.</span>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="closeUploadModal(); navigateTo('login');" style="font-size: 0.72rem; padding: 0.2rem 0.6rem; flex-shrink: 0;">Sign In</button>
+            </div>
+
             <!-- Dropzone -->
             <div class="dropzone-area" id="upload-dropzone">
               <div class="dropzone-icon">📁</div>
