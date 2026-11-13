@@ -690,13 +690,13 @@ function renderCurriculumTree(doc, chapters) {
         <div class="tree-node node-topic collapsed ${hasSubs ? '' : 'empty'}" id="${topId}">
           <div class="tree-node-row" onclick="handleTopicNodeClick('${topId}')">
             <div class="tree-node-left">
-              <span class="tree-chevron">${hasSubs ? '▶' : '•'}</span>
+              <span class="tree-chevron" style="${hasSubs ? 'cursor:pointer;' : ''}" onclick="${hasSubs ? `event.stopPropagation(); toggleTreeNode('${topId}')` : ''}">${hasSubs ? '▶' : '•'}</span>
               <span class="tree-node-icon">📌</span>
               <span class="tree-node-title">${escapeHtml(top.name)}</span>
             </div>
             <div style="display:flex; align-items:center; gap:0.5rem;">
               ${ref?.pageNumber ? `<span class="tree-node-badge">p. ${ref.pageNumber}</span>` : ''}
-              ${hasSubs ? `<span class="tree-node-badge" style="background:#e0e7ff; color:#4338ca; font-weight:600;">${subtopics.length} subs</span>` : ''}
+              ${hasSubs ? `<span class="tree-node-badge" style="background:#e0e7ff; color:#4338ca; font-weight:600; cursor:pointer;" onclick="event.stopPropagation(); toggleTreeNode('${topId}')">${subtopics.length} subs</span>` : ''}
               <button class="btn btn-secondary btn-sm" style="padding:0.2rem 0.55rem; font-size:0.75rem;" onclick="event.stopPropagation(); openTopicWorkspaceFromId('${topId}')">
                 Study ›
               </button>
@@ -764,7 +764,10 @@ function renderCurriculumTree(doc, chapters) {
 }
 
 function toggleTreeNode(nodeId) {
-  const node = document.getElementById(nodeId);
+  let node = document.getElementById(nodeId);
+  if (!node && typeof nodeId === 'string' && !nodeId.startsWith('tree-node-')) {
+    node = document.getElementById(`tree-node-${nodeId}`);
+  }
   if (!node) return;
 
   const children = node.querySelector(':scope > .tree-children');
@@ -800,18 +803,24 @@ function setAllTreeNodes(expanded) {
 }
 
 function handleTopicNodeClick(nodeId) {
-  const data = window.TreeNodeData?.get(nodeId);
-  const node = document.getElementById(nodeId);
+  let node = document.getElementById(nodeId);
+  if (!node && typeof nodeId === 'string' && !nodeId.startsWith('tree-node-')) {
+    node = document.getElementById(`tree-node-${nodeId}`);
+  }
   if (!node) return;
+
+  const data = window.TreeNodeData?.get(nodeId) || window.TreeNodeData?.get(node.id);
 
   // Highlight active selected row
   document.querySelectorAll('.tree-node-row.selected').forEach(r => r.classList.remove('selected'));
   const row = node.querySelector(':scope > .tree-node-row');
   if (row) row.classList.add('selected');
 
+  const hasChildren = Boolean(node.querySelector(':scope > .tree-children'));
+
   // If this topic has subtopics, toggle the subtopics dropdown immediately!
-  if (data?.hasSubs) {
-    toggleTreeNode(nodeId);
+  if (data?.hasSubs || hasChildren) {
+    toggleTreeNode(node.id);
   } else if (data?.topic) {
     // If it's a leaf topic or subtopic, open its study workspace directly
     openTopicWorkspace(data.topic, data.chapter);
@@ -831,6 +840,27 @@ function openTopicWorkspaceFromId(nodeId) {
     openTopicWorkspace(data.topic, data.chapter);
   }
 }
+
+// Global exports for inline HTML event handlers and backwards compatibility
+window.toggleTreeNode = toggleTreeNode;
+window.handleTopicNodeClick = handleTopicNodeClick;
+window.setAllTreeNodes = setAllTreeNodes;
+window.handleTopicRowClick = function(event, nodeId, topic, chapter) {
+  if (event) {
+    event.stopPropagation?.();
+    event.preventDefault?.();
+  }
+  let targetId = nodeId;
+  if (!document.getElementById(targetId) && typeof targetId === 'string' && !targetId.startsWith('tree-node-')) {
+    targetId = `tree-node-${targetId}`;
+  }
+  toggleTreeNode(targetId);
+  if (topic) {
+    AppState.selectedTopic = topic;
+    AppState.selectedChapter = chapter;
+    updateAiDrawerContext();
+  }
+};
 
 // ============================================================================
 // Topic Learning Workspace (Section 6)
