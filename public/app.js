@@ -211,12 +211,113 @@ function handleSessionChange(session) {
       navigateTo('dashboard');
     }
     loadLibrary();
+    // Industry standard: show soft banner if email not yet verified
+    showEmailVerifyBanner(AppState.user);
   } else {
     AppState.subjects = [];
     AppState.documents = [];
     renderLibrarySubjects([]);
     renderDashboardMetrics();
+    showEmailVerifyBanner(null);
   }
+}
+
+/**
+ * Industry Approach A: show a non-blocking "verify your email" banner
+ * inside the dashboard for users who haven't confirmed yet.
+ */
+function showEmailVerifyBanner(user) {
+  const banner = document.getElementById('email-verify-banner');
+  if (!banner) return;
+
+  // Hide banner if no user or already verified
+  if (!user || user.email_confirmed_at) {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+    return;
+  }
+
+  // Email not confirmed — show soft banner (non-blocking)
+  banner.style.display = 'block';
+  banner.innerHTML = `
+    <div style="
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      flex-wrap: wrap;
+    ">
+      <span style="font-size: 1.1rem;">📧</span>
+      <span style="flex: 1; color: #92400e;">
+        <strong>Verify your email</strong> — We sent a confirmation link to
+        <strong>${escapeHtml(user.email)}</strong>.
+        Check your inbox (and spam folder) to unlock all features.
+      </span>
+      <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+        <button
+          type="button"
+          id="btn-resend-verify"
+          style="
+            padding: 0.3rem 0.75rem;
+            font-size: 0.8rem;
+            background: #f59e0b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+          "
+        >Resend Email</button>
+        <button
+          type="button"
+          id="btn-dismiss-verify"
+          style="
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            background: transparent;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+          aria-label="Dismiss"
+        >✕</button>
+      </div>
+    </div>
+  `;
+
+  // Resend verification email
+  document.getElementById('btn-resend-verify')?.addEventListener('click', async () => {
+    const resendBtn = document.getElementById('btn-resend-verify');
+    if (resendBtn) { resendBtn.disabled = true; resendBtn.textContent = 'Sending…'; }
+    try {
+      const { error } = await AppState.supabaseClient.auth.resend({
+        type: 'signup',
+        email: user.email,
+      });
+      if (error) {
+        showToast(`Could not resend: ${error.message}`, 'error');
+        if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = 'Resend Email'; }
+      } else {
+        showToast('Verification email sent! Check your inbox.', 'success');
+        if (resendBtn) { resendBtn.textContent = '✅ Sent'; }
+      }
+    } catch (err) {
+      showToast(`Error: ${err.message}`, 'error');
+      if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = 'Resend Email'; }
+    }
+  });
+
+  // Dismiss banner for this session
+  document.getElementById('btn-dismiss-verify')?.addEventListener('click', () => {
+    banner.style.display = 'none';
+  });
 }
 
 function updateUserDisplay(user) {
@@ -2708,22 +2809,59 @@ function setupAuthForms() {
       try {
         const { data, error } = await AppState.supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
-          showAuthError(
-            `<strong>Invalid email or password.</strong><br>
-             Please check your password. If you forgot it, click below to reset it.<br>
-             <div style="display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap;">
-               <button type="button" class="btn btn-outline btn-sm" id="auth-reset-btn" style="padding: 0.25rem 0.6rem; font-size: 0.78rem;">🔑 Reset Password</button>
-               <button type="button" class="btn btn-secondary btn-sm" id="auth-goto-signup" style="padding: 0.25rem 0.6rem; font-size: 0.78rem;">👉 Create New Account</button>
-             </div>`,
-            true
-          );
-          document.getElementById('auth-reset-btn')?.addEventListener('click', () => sendPasswordResetEmail(email));
-          document.getElementById('auth-goto-signup')?.addEventListener('click', (ev) => {
-            ev.preventDefault();
-            switchToTab('signup');
-            const signupEmail = document.getElementById('signup-email');
-            if (signupEmail) signupEmail.value = email;
-          });
+          const errMsg = (error.message || '').toLowerCase();
+          const isUnconfirmed = errMsg.includes('email not confirmed') || errMsg.includes('not confirmed');
+
+          if (isUnconfirmed) {
+            // Industry standard: tell them exactly what's wrong
+            showAuthError(
+              `<strong>📧 Email not verified yet.</strong><br>
+               Your account exists but you need to confirm your email first.<br>
+               Check your inbox for <strong>${escapeHtml(email)}</strong> and click the confirmation link.<br>
+               <div style="display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap;">
+                 <button type="button" class="btn btn-primary btn-sm" id="auth-resend-confirm-btn" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">📧 Resend Confirmation</button>
+               </div>`,
+              true
+            );
+            document.getElementById('auth-resend-confirm-btn')?.addEventListener('click', async () => {
+              const btn = document.getElementById('auth-resend-confirm-btn');
+              if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+              const { error: resendErr } = await AppState.supabaseClient.auth.resend({ type: 'signup', email });
+              if (resendErr) {
+                showToast(`Could not resend: ${resendErr.message}`, 'error');
+                if (btn) { btn.disabled = false; btn.textContent = '📧 Resend Confirmation'; }
+              } else {
+                showToast('Confirmation email sent! Check your inbox.', 'success');
+                if (btn) { btn.textContent = '✅ Email Sent'; }
+              }
+            });
+          } else {
+            // Supabase returns the same error for wrong password AND non-existent email (security).
+            // Industry UX: show both options clearly separated with context for each.
+            showAuthError(
+              `<strong>Couldn't sign you in.</strong><br>
+               <div style="margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                 <div style="background:#fef3c7; border:1px solid #fcd34d; border-radius:6px; padding:0.5rem 0.75rem; font-size:0.82rem;">
+                   <strong>🔑 Wrong password?</strong><br>
+                   <span style="color:#78350f;">Enter your correct password, or reset it if you forgot.</span><br>
+                   <button type="button" id="auth-reset-btn" style="margin-top:0.4rem; padding:0.25rem 0.75rem; font-size:0.78rem; background:#f59e0b; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:600;">🔑 Reset Password</button>
+                 </div>
+                 <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:0.5rem 0.75rem; font-size:0.82rem;">
+                   <strong>👤 No account yet?</strong><br>
+                   <span style="color:#1e40af;">This email may not be registered. Create a new account.</span><br>
+                   <button type="button" id="auth-goto-signup" style="margin-top:0.4rem; padding:0.25rem 0.75rem; font-size:0.78rem; background:#3b82f6; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:600;">👤 Create New Account</button>
+                 </div>
+               </div>`,
+              true
+            );
+            document.getElementById('auth-reset-btn')?.addEventListener('click', () => sendPasswordResetEmail(email));
+            document.getElementById('auth-goto-signup')?.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              switchToTab('signup');
+              const signupEmail = document.getElementById('signup-email');
+              if (signupEmail) signupEmail.value = email;
+            });
+          }
           passwordInput?.focus();
         } else if (data?.session) {
           handleSessionChange(data.session);
